@@ -1,0 +1,50 @@
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Kotlin
+/build
+.kotlin
+
+# Node / Next.js
+/eduplatform-admin/node_modules
+/eduplatform-admin/.next
+/eduplatform-admin/out
+/eduplatform-admin/build
+/eduplatform-admin/.env*
+!/eduplatform-admin/.env.example
+
+# Web
+/webApp/build
+/webApp/.kotlin
+
+# Others
+.DS_Store
+/tmp
+*.log
+*.txt
+build_error.txt
+build_errors.txt
+build_full_log.txt
+build_output.txt
+.DS_Store
+node_modules/
+.next/
+.idea/
+*.iml
+.gradle/
+build/
+/local.properties

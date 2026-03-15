@@ -1,0 +1,68 @@
+CREATE TABLE CourseEntity (
+    id TEXT PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    category TEXT NOT NULL,
+    city TEXT,
+    instructorName TEXT NOT NULL,
+    durationMinutes INTEGER AS kotlin.Int NOT NULL,
+    hasCertificate INTEGER AS kotlin.Boolean NOT NULL,
+    isPublished INTEGER AS kotlin.Boolean NOT NULL,
+    thumbnailUrl TEXT
+);
+
+CREATE TABLE EnrollmentEntity (
+    userId TEXT NOT NULL,
+    courseId TEXT NOT NULL,
+    enrolledAt TEXT NOT NULL,
+    progressPercent INTEGER AS kotlin.Int NOT NULL,
+    PRIMARY KEY (userId, courseId)
+);
+
+CREATE TABLE LessonEntity (
+    id TEXT PRIMARY KEY NOT NULL,
+    courseId TEXT NOT NULL,
+    title TEXT NOT NULL,
+    contentType TEXT NOT NULL,
+    contentMarkdown TEXT,
+    videoUrl TEXT,
+    orderIndex INTEGER AS kotlin.Int NOT NULL
+);
+
+insertCourse:
+INSERT OR REPLACE INTO CourseEntity (
+    id,
+    title,
+    description,
+    category,
+    city,
+    instructorName,
+    durationMinutes,
+    hasCertificate,
+    isPublished,
+    thumbnailUrl
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllCourses:
+SELECT * FROM CourseEntity;
+
+selectCourseById:
+SELECT * FROM CourseEntity WHERE id = ?;
+
+insertEnrollment:
+INSERT OR REPLACE INTO EnrollmentEntity (userId, courseId, enrolledAt, progressPercent)
+VALUES (?, ?, ?, ?);
+
+selectEnrollmentsForUser:
+SELECT * FROM EnrollmentEntity WHERE userId = ?;
+
+selectEnrollment:
+SELECT * FROM EnrollmentEntity WHERE userId = ? AND courseId = ?;
+
+insertLesson:
+INSERT OR REPLACE INTO LessonEntity (id, courseId, title, contentType, contentMarkdown, videoUrl, orderIndex)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+selectLessonsForCourse:
+SELECT * FROM LessonEntity WHERE courseId = ? ORDER BY orderIndex;
