@@ -85,24 +85,27 @@ export default async function LandingPage() {
                 </Button>
             )}
 
-            {!session ? (
-                <div className="flex items-center gap-3">
-                    <Button variant="ghost" className="font-bold text-slate-600 rounded-xl hover:bg-slate-50" asChild>
-                        <Link href="/login">Giriş Yap</Link>
-                    </Button>
-                    <Button className="font-bold rounded-xl bg-slate-900 text-white hover:bg-black px-6" asChild>
-                        <Link href="/register">Kaydol</Link>
-                    </Button>
+            <Link 
+                href={!session ? "/login" : (isAdmin ? "/dashboard" : "/profile")} 
+                className="flex items-center gap-3 p-1 pr-4 bg-slate-50 rounded-full border border-slate-100 hover:bg-slate-100 transition-colors group"
+            >
+                <div className="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center text-primary font-bold overflow-hidden border border-slate-100">
+                    {!session ? (
+                        <User size={18} className="text-slate-400" />
+                    ) : (
+                        <>
+                            {userProfile?.avatar_url ? (
+                                <img src={userProfile.avatar_url} className="w-full h-full object-cover" />
+                            ) : (
+                                <span>{userProfile?.full_name?.[0]?.toUpperCase() || <User size={18} />}</span>
+                            )}
+                        </>
+                    )}
                 </div>
-            ) : (
-                <Link href={isAdmin ? "/dashboard" : "/profile"} className="flex items-center gap-3 p-1 pr-4 bg-slate-50 rounded-full border border-slate-100 hover:bg-slate-100 transition-colors group">
-                    <div className="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center text-primary font-bold overflow-hidden border border-slate-100">
-                        {userProfile?.full_name?.[0] || <User size={18} />}
-                        {userProfile?.avatar_url && <img src={userProfile.avatar_url} className="w-full h-full object-cover" />}
-                    </div>
-                    <span className="text-xs font-bold text-slate-700 max-w-[100px] truncate">{userProfile?.full_name || "Hesabım"}</span>
-                </Link>
-            )}
+                <span className="text-xs font-bold text-slate-700 max-w-[100px] truncate">
+                    {!session ? "Giriş Yap" : (userProfile?.full_name || "Hesabım")}
+                </span>
+            </Link>
           </div>
         </div>
       </header>
