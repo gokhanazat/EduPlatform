@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Filter, BookOpen, Clock, Trophy, Star, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import { Suspense } from "react"
 import CategoryFilter from "@/components/home/CategoryFilter"
 import SearchInput from "@/components/home/SearchInput"
 
@@ -74,12 +75,15 @@ export default async function StudentHomePage({
         </div>
       </div>
 
-      {/* Filter & Search Bar */}
       <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
-           <CategoryFilter categories={categories} currentCategory={category} />
-           <div className="flex items-center gap-3 w-full lg:w-auto">
-                <SearchInput defaultValue={query} />
-           </div>
+            <Suspense fallback={<div className="h-12 w-full lg:w-96 bg-slate-50 animate-pulse rounded-2xl" />}>
+                <CategoryFilter categories={categories} currentCategory={category} />
+            </Suspense>
+            <div className="flex items-center gap-3 w-full lg:w-auto">
+                <Suspense fallback={<div className="h-12 w-80 bg-slate-50 animate-pulse rounded-2xl" />}>
+                    <SearchInput defaultValue={query} />
+                </Suspense>
+            </div>
       </div>
 
       {/* Course Grid */}

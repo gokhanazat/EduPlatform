@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { createBrowserClient } from "@supabase/ssr"
 import { 
@@ -26,6 +26,14 @@ import Link from "next/link"
 import ReactMarkdown from 'react-markdown'
 
 export default function CourseWatchPage() {
+  return (
+    <Suspense fallback={<div className="h-screen flex items-center justify-center bg-slate-900 text-white font-black animate-pulse uppercase tracking-[0.3em]">Yükleniyor...</div>}>
+      <CourseWatchContent />
+    </Suspense>
+  )
+}
+
+function CourseWatchContent() {
   const { id } = useParams()
   const searchParams = useSearchParams()
   const currentLessonId = searchParams.get("lesson")

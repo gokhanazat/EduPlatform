@@ -17,7 +17,7 @@ import {
   ChevronRight,
   ChevronDown
 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import TopSearch from "@/components/layout/TopSearch"
@@ -117,7 +117,9 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                 <Menu size={24} />
              </button>
              
-             <TopSearch />
+              <Suspense fallback={<div className="flex-1 max-w-md h-11 bg-slate-50 animate-pulse rounded-[1rem]" />}>
+                <TopSearch />
+              </Suspense>
           </div>
 
           <div className="flex items-center gap-6">

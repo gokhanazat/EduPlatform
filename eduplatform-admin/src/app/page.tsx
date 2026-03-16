@@ -21,6 +21,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { createServerSupabase } from "@/lib/supabase/server"
 
+export const dynamic = "force-dynamic"
+
 export default async function LandingPage() {
   const supabase = await createServerSupabase()
   const { data: { session } } = await supabase.auth.getSession()
