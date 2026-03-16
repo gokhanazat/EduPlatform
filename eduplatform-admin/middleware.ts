@@ -15,10 +15,30 @@ export async function middleware(req: NextRequest) {
       },
     }
   )
-  const { data: { session } } = await supabase.auth.getSession()
 
-  if (!session && req.nextUrl.pathname.startsWith("/dashboard")) {
+  const { data: { session } } = await supabase.auth.getSession()
+  const path = req.nextUrl.pathname
+
+  // Public paths allowed without session
+  const isPublicPath = path === "/" || path === "/login" || path === "/register" || path === "/admin/login"
+
+  if (!session && !isPublicPath) {
     return NextResponse.redirect(new URL("/login", req.url))
+  }
+
+  if (session) {
+    // If logged in and trying to access auth pages, redirect to dashboard or home
+    if (isPublicPath && path !== "/") {
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single()
+      if (profile?.role === 'admin') return NextResponse.redirect(new URL("/dashboard", req.url))
+      return NextResponse.redirect(new URL("/home", req.url))
+    }
+
+    // Guard admin paths
+    if (path.startsWith("/dashboard") || path.startsWith("/manage-courses") || path.startsWith("/whitelist")) {
+       const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single()
+       if (profile?.role !== 'admin') return NextResponse.redirect(new URL("/home", req.url))
+    }
   }
 
   return res
