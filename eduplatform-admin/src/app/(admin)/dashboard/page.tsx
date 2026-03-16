@@ -54,21 +54,28 @@ export default async function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map(s => (
-          <Card key={s.label} className="card-hover border-none glass-card p-0 overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-2xl ${s.color}`}>
-                  <s.icon size={24} />
+        {[
+          { ...stats[0], href: "/whitelist" },
+          { ...stats[1], href: "/manage-courses" },
+          { ...stats[2], href: "/manage-courses" },
+          { ...stats[3], href: "/manage-certificates" },
+        ].map(s => (
+          <Link href={s.href} key={s.label}>
+            <Card className="card-hover border-none glass-card p-0 overflow-hidden cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`p-3 rounded-2xl ${s.color}`}>
+                    <s.icon size={24} />
+                  </div>
+                  <div className="flex items-center gap-1 text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
+                      <TrendingUp size={12} /> +12%
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
-                    <TrendingUp size={12} /> +12%
-                </div>
-              </div>
-              <div className="text-3xl font-extrabold text-slate-900">{s.value ?? 0}</div>
-              <div className="text-sm font-semibold text-slate-400 mt-1 uppercase tracking-wider">{s.label}</div>
-            </CardContent>
-          </Card>
+                <div className="text-3xl font-extrabold text-slate-900">{s.value ?? 0}</div>
+                <div className="text-sm font-semibold text-slate-400 mt-1 uppercase tracking-wider">{s.label}</div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
