@@ -94,13 +94,6 @@ fun ProfileScreen(navController: NavHostController) {
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Surface(
-                        modifier = Modifier.size(28.dp),
-                        shape = CircleShape,
-                        color = Color(0xFF3B82F6)
-                    ) {
-                        Icon(Icons.Default.Edit, null, tint = Color.White, modifier = Modifier.padding(6.dp))
-                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

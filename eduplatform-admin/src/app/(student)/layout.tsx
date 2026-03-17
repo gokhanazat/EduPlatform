@@ -88,16 +88,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             })}
         </nav>
 
-        {/* Pro Plan Card */}
-        <div className="bg-slate-50 rounded-[2rem] p-6 space-y-4 mb-4">
-            <div className="space-y-1">
-                <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">PRO ÜYELİK</div>
-                <p className="text-xs font-bold text-slate-600 leading-relaxed">Tüm uzman eğitimlere sınırsız erişim kazanın.</p>
-            </div>
-            <Button className="w-full h-11 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-black uppercase tracking-widest">
-                Şimdi Yükselt
-            </Button>
-        </div>
+
 
         <Button 
             onClick={handleLogout}
@@ -137,7 +128,6 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                 </div>
                 <div className="w-11 h-11 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 shadow-inner border-2 border-white overflow-hidden relative">
                     {profile?.full_name?.[0] || <User size={22} />}
-                    {profile?.avatar_url && <img src={profile.avatar_url} className="absolute inset-0 w-full h-full object-cover" />}
                 </div>
             </div>
           </div>

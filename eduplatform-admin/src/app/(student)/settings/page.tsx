@@ -8,7 +8,6 @@ import {
   User, 
   Mail, 
   MapPin, 
-  Camera, 
   Save, 
   ChevronLeft,
   CheckCircle2,
@@ -30,7 +29,6 @@ export default function SettingsPage() {
 
   const [fullName, setFullName] = useState("")
   const [city, setCity] = useState("")
-  const [avatarUrl, setAvatarUrl] = useState("")
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -55,7 +53,6 @@ export default function SettingsPage() {
         setProfile(data)
         setFullName(data.full_name || "")
         setCity(data.city || "")
-        setAvatarUrl(data.avatar_url || "")
       }
       setLoading(false)
     }
@@ -72,7 +69,6 @@ export default function SettingsPage() {
       .update({
         full_name: fullName,
         city: city,
-        avatar_url: avatarUrl,
         updated_at: new Date().toISOString()
       })
       .eq('id', profile.id)
@@ -107,13 +103,9 @@ export default function SettingsPage() {
               <div className="h-32 bg-indigo-50 relative">
                   <div className="absolute -bottom-12 left-12">
                       <div className="relative group">
-                          <div className="w-28 h-28 rounded-[2rem] bg-white border-4 border-white shadow-xl flex items-center justify-center text-primary font-black text-3xl overflow-hidden relative">
+                          <div className="w-28 h-28 rounded-[2rem] bg-indigo-50 border-4 border-white shadow-xl flex items-center justify-center text-primary font-black text-3xl overflow-hidden relative">
                               {fullName?.[0] || <User size={40} />}
-                              {avatarUrl && <img src={avatarUrl} className="absolute inset-0 w-full h-full object-cover" />}
                           </div>
-                          <button type="button" className="absolute bottom-0 right-0 w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                              <Camera size={18} />
-                          </button>
                       </div>
                   </div>
               </div>
@@ -154,19 +146,6 @@ export default function SettingsPage() {
                                 onChange={(e) => setCity(e.target.value)}
                                 className="h-14 pl-12 rounded-2xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-primary/10 transition-all font-bold"
                                 placeholder="Örn: Isparta"
-                              />
-                          </div>
-                      </div>
-
-                      <div className="space-y-2">
-                          <Label className="font-bold text-slate-700 ml-1">Profil Resmi (URL)</Label>
-                          <div className="relative">
-                              <Camera className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
-                              <Input 
-                                value={avatarUrl} 
-                                onChange={(e) => setAvatarUrl(e.target.value)}
-                                className="h-14 pl-12 rounded-2xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-primary/10 transition-all font-bold"
-                                placeholder="Görsel URL adresi"
                               />
                           </div>
                       </div>

@@ -97,9 +97,8 @@ export default async function ProfilePage() {
             <div className="flex flex-col md:flex-row items-center gap-8">
                 {/* Profile Image & Status */}
                 <div className="relative">
-                    <div className="w-32 h-32 rounded-full border-4 border-slate-50 bg-slate-100 flex items-center justify-center text-4xl font-black text-slate-300 overflow-hidden shadow-inner">
+                    <div className="w-32 h-32 rounded-full border-4 border-slate-50 bg-slate-100 flex items-center justify-center text-4xl font-black text-slate-300 overflow-hidden shadow-inner relative">
                         {profile?.full_name?.[0] || session.user.email?.[0]?.toUpperCase()}
-                        {profile?.avatar_url && <img src={profile.avatar_url} className="absolute inset-0 w-full h-full object-cover" />}
                     </div>
                     {/* Status indicator */}
                     <div className="absolute bottom-1 right-1 w-7 h-7 bg-emerald-500 border-4 border-white rounded-full"></div>
