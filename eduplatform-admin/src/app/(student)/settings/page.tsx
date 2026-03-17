@@ -68,7 +68,8 @@ export default function SettingsPage() {
       .from('profiles')
       .update({
         full_name: fullName,
-        city: city
+        city: city,
+        updated_at: new Date().toISOString()
       })
       .eq('id', profile.id)
 

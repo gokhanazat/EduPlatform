@@ -41,7 +41,7 @@ export default function RegisterPage() {
     const { data: whitelistEntry, error: whitelistError } = await supabase
       .from("whitelist")
       .select("*")
-      .eq("email", email)
+      .ilike("email", email)
       .eq("is_active", true)
       .single();
 
