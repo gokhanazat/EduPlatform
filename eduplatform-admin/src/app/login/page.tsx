@@ -50,136 +50,147 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white">
-      {/* Left Side - Image (Desktop Only) */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden group">
-        <img 
-          src="/login-bg.png" 
-          alt="Login background" 
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-primary/40 backdrop-blur-[2px] mix-blend-multiply"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+    <div className="min-h-screen bg-slate-50/30 flex flex-col font-sans selection:bg-blue-100">
+      {/* Header */}
+      <header className="w-full h-16 bg-white border-b border-slate-100 px-8 flex items-center justify-between z-10">
+        <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+                <BookOpen size={18} />
+            </div>
+            <span className="text-lg font-bold text-slate-900">ITSO Akademi</span>
+        </Link>
         
-        <div className="absolute bottom-20 left-16 max-w-lg space-y-6">
-          <div className="w-16 h-1 w-20 bg-white rounded-full"></div>
-          <h1 className="text-6xl font-black text-white leading-tight tracking-tight">
-            Kariyerini <br /> Yükselt
-          </h1>
-          <p className="text-xl text-indigo-50 font-medium opacity-90 leading-relaxed">
-            Teknoloji, tasarım ve iş dünyasında en çok talep edilen yetkinlikleri öğrenen 10.000'den fazla öğrenciye katılın.
-          </p>
-        </div>
+        <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+            <Link href="/courses" className="hover:text-blue-600 transition-colors">Courses</Link>
+            <Link href="/about" className="hover:text-blue-600 transition-colors">About</Link>
+        </nav>
 
-        <div className="absolute top-12 left-16">
-            <Link href="/" className="flex items-center gap-2 group-hover:-translate-x-1 transition-transform">
-                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary shadow-xl">
-                    <BookOpen size={24} />
-                </div>
-                <span className="text-xl font-bold text-white uppercase tracking-widest hidden md:block">ITSO Akademi</span>
-            </Link>
-        </div>
-      </div>
-
-      {/* Right Side - Form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 bg-white relative">
-        <div className="absolute top-12 left-8 lg:left-24">
-            <Link href="/" className="flex items-center gap-1.5 text-slate-400 hover:text-primary transition-colors font-bold text-sm">
-                <ChevronLeft size={18} /> Ana Sayfa
-            </Link>
-        </div>
-
-        <div className="max-w-md w-full mx-auto space-y-10">
-          <div className="space-y-4">
-            <h2 className="text-4xl font-black text-slate-900 tracking-tight">Tekrar Hoş Geldiniz</h2>
-            <p className="text-slate-400 font-medium">Giriş yapmak için lütfen bilgilerinizi girin.</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <Label className="font-bold text-slate-700 ml-1">E-posta Adresi</Label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
-                <Input 
-                  type="email" 
-                  placeholder="ornek@itso.org.tr" 
-                  className="h-14 pl-12 rounded-2xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-primary/10 transition-all font-medium"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between px-1">
-                <Label className="font-bold text-slate-700">Şifre</Label>
-                <Link href="#" className="text-xs font-bold text-primary hover:underline">Şifremi unuttum</Link>
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
-                <Input 
-                  type={showPassword ? "text" : "password"} 
-                  placeholder="••••••••" 
-                  className="h-14 pl-12 rounded-2xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-primary/10 transition-all font-medium"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button 
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-primary"
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 px-1">
-                <input type="checkbox" id="remember" className="w-4 h-4 rounded border-slate-200 text-primary focus:ring-primary" />
-                <label htmlFor="remember" className="text-sm font-bold text-slate-400 cursor-pointer">30 gün boyunca hatırla</label>
-            </div>
-
-            {error && (
-              <div className="p-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-sm font-bold text-center animate-in fade-in zoom-in-95">
-                {error}
-              </div>
-            )}
-
-            <Button type="submit" className="w-full h-14 rounded-2xl font-black text-lg btn-primary shadow-2xl shadow-indigo-100" disabled={loading}>
-              {loading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+        <Link href="/register">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 font-bold text-sm h-10 shadow-sm transition-all">
+                Sign Up
             </Button>
-          </form>
+        </Link>
+      </header>
 
-          <div className="relative space-y-8">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-slate-100"></span>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-4 text-slate-300 font-black tracking-widest">Veya şununla devam et</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="h-12 rounded-2xl border-slate-100 gap-2 font-bold hover:bg-slate-50">
-                    <img src="https://www.google.com/favicon.ico" className="w-4 h-4" /> Google
-                </Button>
-                <Button variant="outline" className="h-12 rounded-2xl border-slate-100 gap-2 font-bold hover:bg-slate-50">
-                    <Lock size={16} /> SSO
-                </Button>
+      {/* Main Content */}
+      <main className="flex-1 flex items-center justify-center p-6 md:p-12">
+        <div className="w-full max-w-5xl bg-white rounded-[1.5rem] shadow-2xl shadow-slate-200/60 overflow-hidden flex flex-col md:flex-row min-h-[600px] border border-slate-100">
+          
+          {/* Left Side - Visual */}
+          <div className="md:w-5/12 relative overflow-hidden hidden md:block">
+            <img 
+              src="/login-bg.png" 
+              alt="Login background" 
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-blue-600/60 backdrop-blur-[1px]"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 via-transparent to-transparent"></div>
+            
+            <div className="absolute bottom-16 left-12 right-12 space-y-4">
+              <h2 className="text-4xl font-black text-white leading-tight tracking-tight">
+                Elevate Your Career
+              </h2>
+              <p className="text-base text-blue-50/90 font-medium leading-relaxed">
+                Join over 10,000 students learning the most in-demand skills in tech, design, and business.
+              </p>
             </div>
           </div>
 
-          <div className="text-center font-bold text-slate-500">
-            Hesabınız yok mu?{" "}
-            <Link href="/register" className="text-primary hover:underline">Hesap oluştur</Link>
+          {/* Right Side - Form */}
+          <div className="w-full md:w-7/12 flex flex-col justify-center p-10 md:px-16 lg:px-20 relative bg-white">
+            <div className="max-w-md w-full mx-auto space-y-8">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
+                <p className="text-slate-500 text-sm font-medium">Please enter your details to sign in.</p>
+              </div>
+
+              <form onSubmit={handleLogin} className="space-y-5">
+                <div className="space-y-2">
+                  <Label className="text-[13px] font-bold text-slate-700">Email Address</Label>
+                  <Input 
+                    type="email" 
+                    placeholder="name@university.edu" 
+                    className="h-12 rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500/10 transition-all font-medium text-slate-900"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-[13px] font-bold text-slate-700">Password</Label>
+                    <Link href="#" className="text-[12px] font-bold text-blue-600 hover:text-blue-700">Forgot password?</Link>
+                  </div>
+                  <div className="relative">
+                    <Input 
+                      type={showPassword ? "text" : "password"} 
+                      placeholder="••••••••" 
+                      className="h-12 rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500/10 transition-all font-medium pr-10"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <input type="checkbox" id="remember" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                    <label htmlFor="remember" className="text-sm font-medium text-slate-500 cursor-pointer">Remember me for 30 days</label>
+                </div>
+
+                {error && (
+                  <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-[13px] font-bold text-center">
+                    {error}
+                  </div>
+                )}
+
+                <Button type="submit" className="w-full h-12 rounded-lg font-bold text-base bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-100 transition-all" disabled={loading}>
+                  {loading ? "Signing In..." : "Sign In"}
+                </Button>
+              </form>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-slate-100"></span>
+                </div>
+                <div className="relative flex justify-center text-[10px] uppercase">
+                  <span className="bg-white px-4 text-slate-400 font-bold tracking-widest">or continue with</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                  <Button variant="outline" className="h-12 rounded-lg border-slate-200 gap-2 font-bold text-slate-700 hover:bg-slate-50 text-sm">
+                      <img src="https://www.google.com/favicon.ico" className="w-4 h-4" /> Google
+                  </Button>
+                  <Button variant="outline" className="h-12 rounded-lg border-slate-200 gap-2 font-bold text-slate-700 hover:bg-slate-50 text-sm">
+                      <Lock size={16} /> SSO
+                  </Button>
+              </div>
+
+              <div className="text-center font-bold text-slate-500 text-[13px]">
+                Don't have an account?{" "}
+                <Link href="/register" className="text-blue-600 hover:text-blue-700">Create an account</Link>
+              </div>
+            </div>
           </div>
         </div>
+      </main>
 
-        <footer className="absolute bottom-8 left-0 right-0 text-center">
-            <p className="text-[10px] text-slate-300 font-black uppercase tracking-widest">© 2026 ITSO Akademi Eğitim Sistemleri. Tüm hakları saklıdır.</p>
-        </footer>
-      </div>
+      {/* Footer */}
+      <footer className="w-full py-8 text-center bg-white md:bg-transparent">
+          <p className="text-[11px] text-slate-400 font-medium">
+            © 2026 ITSO Akademi Eğitim Sistemleri. Professional tools for professional learners.
+          </p>
+      </footer>
     </div>
   );
 }
