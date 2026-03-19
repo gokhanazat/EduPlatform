@@ -14,6 +14,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Trash2, Plus, GripVertical, FileText, Video as VideoIcon, ArrowLeft, Save, Layout, ListOrdered, BookOpen } from "lucide-react"
 import Link from "next/link"
+import { adminSaveCourse } from "@/app/actions/admin-actions"
 
 export default function CourseEditPage() {
   const params = useParams()
@@ -104,23 +105,21 @@ export default function CourseEditPage() {
     try {
       let res
       if (isNew) {
-        res = await supabase.from("courses").insert(payload).select().single()
+        res = await adminSaveCourse(payload, id, true)
       } else {
         if (!id || id === "undefined" || id === "null") {
             throw new Error(`Geçerli bir kurs ID'si bulunamadı (Görülen ID: ${id}). Lütfen sayfayı yenileyip tekrar deneyin.`)
         }
-        res = await supabase.from("courses").update(payload).eq("id", id).select().single()
+        res = await adminSaveCourse(payload, id, false)
       }
+      
+      if (res.error) throw new Error(res.error)
 
-      if (res.error) {
-        toast({ title: "Hata", description: res.error.message, variant: "destructive" })
+      toast({ title: "Başarılı", description: "Kurs başarıyla kaydedildi." })
+      if (isNew && res.data) {
+        router.push(`/manage-courses/${res.data.id}`)
       } else {
-        toast({ title: "Başarılı", description: "Kurs başarıyla kaydedildi." })
-        if (isNew && res.data) {
-          router.push(`/manage-courses/${res.data.id}`)
-        } else {
-          router.refresh()
-        }
+        router.refresh()
       }
     } catch (e: any) {
       toast({ title: "Hata", description: e.message, variant: "destructive" })

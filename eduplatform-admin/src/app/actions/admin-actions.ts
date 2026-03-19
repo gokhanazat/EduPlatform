@@ -14,6 +14,24 @@ const supabaseAdmin = createClient(
   }
 )
 
+export async function adminSaveCourse(payload: any, id: string, isNew: boolean) {
+  try {
+    let res
+    if (isNew) {
+      res = await supabaseAdmin.from("courses").insert(payload).select().single()
+    } else {
+      res = await supabaseAdmin.from("courses").update(payload).eq("id", id).select().single()
+    }
+    
+    if (res.error) throw new Error(res.error.message)
+    revalidatePath("/manage-courses")
+    return { data: res.data, error: null }
+  } catch (error: any) {
+    console.error("Course save action error:", error)
+    return { data: null, error: error.message }
+  }
+}
+
 export async function adminChangeUserPassword(userId: string, newPassword: string) {
   try {
     const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
