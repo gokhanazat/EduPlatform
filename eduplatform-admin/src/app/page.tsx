@@ -119,7 +119,7 @@ export default async function LandingPage() {
         {/* Android Style Hero Banner */}
         <section className="relative w-full h-[400px] rounded-[3rem] overflow-hidden group shadow-2xl shadow-indigo-100">
           <img 
-            src="/hero.png" 
+            src="/ogrenci-banner.jpeg" 
             alt="Landing Hero" 
             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
           />
