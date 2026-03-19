@@ -1,18 +1,7 @@
 "use server"
 
-import { createClient } from "@supabase/supabase-js"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-)
 
 export async function adminSaveCourse(payload: any, id: string, isNew: boolean) {
   try {
@@ -46,5 +35,17 @@ export async function adminChangeUserPassword(userId: string, newPassword: strin
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message || "Bilinmeyen bir hata oluştu" }
+  }
+}
+
+export async function adminDeleteCourse(courseId: string) {
+  try {
+    const { error } = await supabaseAdmin.from("courses").delete().eq("id", courseId)
+    if (error) throw error
+    revalidatePath("/manage-courses")
+    return { success: true }
+  } catch (error: any) {
+    console.error("Delete course error:", error)
+    return { success: false, error: error.message }
   }
 }

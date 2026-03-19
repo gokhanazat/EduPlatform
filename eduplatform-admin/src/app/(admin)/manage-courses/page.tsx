@@ -1,15 +1,17 @@
-import { createServerSupabase } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { Edit, BookOpen, Trash2, Plus, Search, Filter, MoreHorizontal } from "lucide-react"
+import { Edit, BookOpen, Plus, Search, Filter, MoreHorizontal } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { DeleteCourseButton } from "./delete-button"
+
+export const dynamic = "force-dynamic"
 
 export default async function AdminCoursesPage() {
-  const supabase = await createServerSupabase()
-  const { data: courses } = await supabase
+  const { data: courses } = await supabaseAdmin
     .from("courses")
     .select("*")
     .order("created_at", { ascending: false })
@@ -58,7 +60,7 @@ export default async function AdminCoursesPage() {
                   <TableCell className="py-6 px-8">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-primary font-bold text-lg overflow-hidden shrink-0">
-                            {course.thumbnail_url ? <img src={course.thumbnail_url} className="w-full h-full object-cover" /> : course.title[0]}
+                            {course.thumbnail_url ? <img src={course.thumbnail_url} className="w-full h-full object-cover" /> : course.title?.[0] || 'E'}
                         </div>
                         <div>
                             <div className="font-bold text-slate-900 group-hover:text-primary transition-colors">{course.title}</div>
@@ -105,15 +107,7 @@ export default async function AdminCoursesPage() {
                       <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border-slate-100 text-slate-400 hover:text-amber-500" asChild>
                         <Link href={`/manage-courses/${course.id || course.course_id}/quiz`}><BookOpen size={16} /></Link>
                       </Button>
-                      <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border-slate-100 text-red-300 hover:text-red-500 hover:bg-red-50" onClick={async () => {
-                        if (confirm("Bu kursu silmek istediğinizden emin misiniz?")) {
-                            const supabase = await createServerSupabase()
-                            await supabase.from("courses").delete().eq("id", course.id || course.course_id)
-                            window.location.reload()
-                        }
-                      }}>
-                        <Trash2 size={16} />
-                      </Button>
+                      <DeleteCourseButton courseId={course.id || course.course_id} />
                     </div>
                     <div className="group-hover:hidden">
                         <MoreHorizontal size={20} className="ml-auto text-slate-200" />
