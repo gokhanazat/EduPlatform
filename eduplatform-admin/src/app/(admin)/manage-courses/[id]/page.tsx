@@ -35,27 +35,53 @@ export default function CourseEditPage() {
   })
 
   const [lessons, setLessons] = useState<any[]>([])
-  const [editingLesson, setEditingQuestion] = useState<any>(null)
+  const [editingLesson, setEditingLesson] = useState<any>(null)
   const [showLessonForm, setShowLessonForm] = useState(false)
 
   useEffect(() => {
-    if (!isNew) {
+    if (!isNew && id) {
       loadCourse()
       loadLessons()
     }
-  }, [id])
+  }, [id, isNew])
 
   async function loadCourse() {
-    const { data } = await supabase.from("courses").select("*").eq("id", id).single()
+    if (!id || id === "new") return
+    const { data, error } = await supabase.from("courses").select("*").eq("id", id).single()
+    if (error) {
+      console.error("Kurs yükleme hatası:", error)
+      return
+    }
     if (data) setCourse(data)
   }
 
   async function loadLessons() {
-    const { data } = await supabase.from("lessons").select("*").eq("course_id", id).order("order_index")
+    if (!id || id === "new") return
+    const { data, error } = await supabase.from("lessons").select("*").eq("course_id", id).order("order_index")
+    if (error) {
+       console.error("Ders yükleme hatası:", error)
+       return
+    }
     setLessons(data || [])
   }
 
+  async function deleteLesson(lessonId: string) {
+    if (!confirm("Bu dersi silmek istediğinize emin misiniz?")) return
+    const { error } = await supabase.from("lessons").delete().eq("id", lessonId)
+    if (error) {
+      toast({ title: "Hata", description: error.message, variant: "destructive" })
+    } else {
+      toast({ title: "Başarılı", description: "Ders silindi." })
+      loadLessons()
+    }
+  }
+
   async function saveCourse() {
+    if (!course.title) {
+        toast({ title: "Hata", description: "Lütfen eğitim başlığını girin.", variant: "destructive" })
+        return
+    }
+
     setLoading(true)
     const payload = { ...course, city: course.city || null }
 
@@ -64,6 +90,9 @@ export default function CourseEditPage() {
       if (isNew) {
         res = await supabase.from("courses").insert(payload).select().single()
       } else {
+        if (!id || id === "undefined") {
+            throw new Error("Geçerli bir kurs ID'si bulunamadı.")
+        }
         res = await supabase.from("courses").update(payload).eq("id", id).select().single()
       }
 
@@ -78,20 +107,28 @@ export default function CourseEditPage() {
         }
       }
     } catch (e: any) {
-      toast({ title: "Beklenmedik Hata", description: e.message, variant: "destructive" })
+      toast({ title: "Hata", description: e.message, variant: "destructive" })
     } finally {
       setLoading(false)
     }
   }
 
   async function saveLesson(lessonData: any) {
+    if (!id || id === "new") {
+        toast({ title: "Hata", description: "Ders eklemeden önce eğitimi kaydetmelisiniz.", variant: "destructive" })
+        return
+    }
+
     const payload = {
       ...lessonData,
       course_id: id,
-      order_index: lessonData.order_index || lessons.length
+      order_index: lessonData.order_index ?? lessons.length
     }
+    
     const { error } = await supabase.from("lessons").upsert(payload)
-    if (!error) {
+    if (error) {
+      toast({ title: "Hata", description: error.message, variant: "destructive" })
+    } else {
       setShowLessonForm(false)
       toast({ title: "Ders Kaydedildi", description: "Müfredat güncellendi." })
       loadLessons()
@@ -176,7 +213,7 @@ export default function CourseEditPage() {
                                 <CardDescription>Video ve metin içeriklerini buradan ekleyin.</CardDescription>
                             </div>
                         </div>
-                        <Button size="sm" onClick={() => { setEditingQuestion({ title: "", content_type: "text", content_markdown: "", video_url: "" }); setShowLessonForm(true) }} className="rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 h-10 gap-2">
+                        <Button size="sm" onClick={() => { setEditingLesson({ title: "", content_type: "text", content_markdown: "", video_url: "" }); setShowLessonForm(true) }} className="rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 h-10 gap-2">
                         <Plus size={18} /> Ders Ekle
                         </Button>
                     </CardHeader>
@@ -193,8 +230,8 @@ export default function CourseEditPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Button variant="ghost" size="sm" onClick={() => { setEditingQuestion(lesson); setShowLessonForm(true) }} className="text-primary font-bold">Düzenle</Button>
-                                    <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></Button>
+                                    <Button variant="ghost" size="sm" onClick={() => { setEditingLesson(lesson); setShowLessonForm(true) }} className="text-primary font-bold">Düzenle</Button>
+                                    <Button variant="ghost" size="sm" onClick={() => deleteLesson(lesson.id)} className="text-red-400 hover:text-red-600 hover:bg-red-50"><Trash2 size={16} /></Button>
                                 </div>
                             </div>
                         ))}
@@ -282,20 +319,20 @@ export default function CourseEditPage() {
             <div className="flex-1 p-10 space-y-8 overflow-y-auto">
                 <div className="grid gap-3">
                     <Label className="font-bold text-slate-600">Ders Başlığı</Label>
-                    <Input value={editingLesson?.title} onChange={e => setEditingQuestion({...editingLesson, title: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-slate-100" />
+                    <Input value={editingLesson?.title} onChange={e => setEditingLesson({...editingLesson, title: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-slate-100" />
                 </div>
                 
                 <div className="grid gap-3">
                     <Label className="font-bold text-slate-600">İçerik Tipi</Label>
                     <div className="grid grid-cols-2 gap-4">
                         <button 
-                            onClick={() => setEditingQuestion({...editingLesson, content_type: "text"})}
+                            onClick={() => setEditingLesson({...editingLesson, content_type: "text"})}
                             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${editingLesson?.content_type === "text" ? "border-primary bg-indigo-50 text-primary" : "border-slate-100 text-slate-400"}`}
                         >
                             <FileText size={24} /> <span className="text-xs font-bold uppercase tracking-widest">Metin</span>
                         </button>
                         <button 
-                            onClick={() => setEditingQuestion({...editingLesson, content_type: "video"})}
+                            onClick={() => setEditingLesson({...editingLesson, content_type: "video"})}
                             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${editingLesson?.content_type === "video" ? "border-primary bg-indigo-50 text-primary" : "border-slate-100 text-slate-400"}`}
                         >
                             <VideoIcon size={24} /> <span className="text-xs font-bold uppercase tracking-widest">Video</span>
@@ -306,12 +343,12 @@ export default function CourseEditPage() {
                 {editingLesson?.content_type === "text" ? (
                     <div className="grid gap-3">
                         <Label className="font-bold text-slate-600">İçerik (Markdown)</Label>
-                        <Textarea rows={12} value={editingLesson?.content_markdown} onChange={e => setEditingQuestion({...editingLesson, content_markdown: e.target.value})} className="rounded-2xl bg-slate-50 border-slate-100 resize-none" />
+                        <Textarea rows={12} value={editingLesson?.content_markdown} onChange={e => setEditingLesson({...editingLesson, content_markdown: e.target.value})} className="rounded-2xl bg-slate-50 border-slate-100 resize-none" />
                     </div>
                 ) : (
                     <div className="grid gap-3">
                         <Label className="font-bold text-slate-600">Video Linki (URL)</Label>
-                        <Input value={editingLesson?.video_url} onChange={e => setEditingQuestion({...editingLesson, video_url: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-slate-100" placeholder="https://youtube.com/..." />
+                        <Input value={editingLesson?.video_url} onChange={e => setEditingLesson({...editingLesson, video_url: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-slate-100" placeholder="https://youtube.com/..." />
                     </div>
                 )}
             </div>

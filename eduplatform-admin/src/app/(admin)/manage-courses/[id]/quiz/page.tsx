@@ -81,6 +81,17 @@ export default function QuizBuilderPage() {
     loadQuiz()
   }
 
+  async function deleteQuestion(questionId: string) {
+    if (!confirm("Bu soruyu silmek istediğinize emin misiniz?")) return
+    const { error } = await supabase.from("questions").delete().eq("id", questionId)
+    if (error) {
+      toast({ title: "Hata", description: error.message, variant: "destructive" })
+    } else {
+      toast({ title: "Başarılı", description: "Soru silindi." })
+      loadQuiz()
+    }
+  }
+
   if (loading) return <div>Yükleniyor...</div>
 
   return (
@@ -161,7 +172,7 @@ export default function QuizBuilderPage() {
                 <Button variant="ghost" size="icon" onClick={() => { setEditingQuestion(q); setShowQuestionForm(true) }}>
                   <ChevronRight size={16} />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-red-500"><Trash2 size={16} /></Button>
+                <Button variant="ghost" size="icon" className="text-red-500" onClick={() => deleteQuestion(q.id)}><Trash2 size={16} /></Button>
               </div>
             </CardContent>
           </Card>
