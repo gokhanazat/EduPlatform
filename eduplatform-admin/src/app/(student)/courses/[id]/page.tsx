@@ -141,11 +141,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
             <Card className="border-none shadow-2xl shadow-indigo-100/50 rounded-[2.5rem] bg-white overflow-hidden sticky top-28">
                 <div className="premium-gradient h-2"></div>
                 <CardContent className="p-8 space-y-8">
-                    <div className="space-y-2">
-                        <div className="text-4xl font-black text-emerald-600">Ücretsiz</div>
-                        <div className="text-sm text-slate-400 font-semibold line-through">normal fiyat ₺450</div>
-                    </div>
-
                     <div className="space-y-4">
                         <EnrollButton 
                             courseId={course.id} 
@@ -153,7 +148,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
                             isEnrolled={!!enrollment}
                             isFree={true} 
                         />
-                        <p className="text-[10px] text-center text-slate-400 font-medium uppercase tracking-widest">Ömür Boyu Erişim • Sertifika Garantisi</p>
                     </div>
 
                     <div className="space-y-4">
@@ -174,16 +168,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
                                 </div>
                             )}
                         </div>
-                    </div>
-
-                    <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
-                         <div className="flex flex-col">
-                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Paylaş</div>
-                            <div className="text-slate-900 font-bold">Arkadaşına öner</div>
-                         </div>
-                         <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-primary cursor-pointer transition-all">
-                            <ChevronRight size={20} />
-                         </div>
                     </div>
                 </CardContent>
             </Card>
