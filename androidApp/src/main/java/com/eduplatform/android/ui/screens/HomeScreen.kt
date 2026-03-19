@@ -138,24 +138,27 @@ fun HomeScreen(navController: NavHostController) {
 
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(bottom = 8.dp)
             ) {
                 // ALL CATEGORY
                 item {
-                    CategoryChip(
+                    CategoryCard(
                         title = "Hepsi", 
                         icon = Icons.Default.AllInclusive, 
                         isSelected = state.selectedCategory == null,
+                        color = Color(0xFF6366F1),
                         onClick = { vm.onIntent(CourseIntent.FilterCategory(null)) }
                     )
                 }
                 
                 items(state.categories) { cat ->
                     val isSelected = state.selectedCategory == cat
-                    CategoryChip(
+                    CategoryCard(
                         title = cat, 
                         icon = getIconForCategory(cat), 
                         isSelected = isSelected,
+                        color = getCategoryColor(cat),
                         onClick = { vm.onIntent(CourseIntent.FilterCategory(cat)) }
                     )
                 }
@@ -213,31 +216,60 @@ fun getIconForCategory(category: String): ImageVector {
     }
 }
 
+fun getCategoryColor(category: String): Color {
+    return when (category) {
+        "Yazılım", "Programlama" -> Color(0xFF3B82F6) // Blue
+        "Tasarım" -> Color(0xFFA855F7) // Purple
+        "İş Dünyası" -> Color(0xFF10B981) // Emerald
+        "Pazarlama" -> Color(0xFFF97316) // Orange
+        "Müzik" -> Color(0xFFEF4444) // Red
+        "Fotoğrafçılık" -> Color(0xFF14B8A6) // Teal
+        "Kişisel Gelişim" -> Color(0xFFF59E0B) // Amber
+        else -> Color(0xFF6366F1) // Indigo
+    }
+}
+
 @Composable
-fun CategoryChip(title: String, icon: ImageVector, isSelected: Boolean, onClick: () -> Unit) {
-    Surface(
-        color = if (isSelected) Color(0xFF3B82F6) else Color(0xFFF1F5F9),
-        shape = RoundedCornerShape(12.dp),
+fun CategoryCard(title: String, icon: ImageVector, isSelected: Boolean, color: Color, onClick: () -> Unit) {
+    Card(
         modifier = Modifier
-            .height(40.dp)
-            .clickable(onClick = onClick)
+            .width(100.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) Color.White else Color(0xFFF8FAFC)
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isSelected) 8.dp else 0.dp
+        ),
+        border = if (isSelected) BorderStroke(2.dp, color.copy(alpha = 0.3f)) else null
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                icon, 
-                null, 
-                tint = if (isSelected) Color.White else Color(0xFF64748B), 
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(color.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                title, 
-                color = if (isSelected) Color.White else Color(0xFF1E293B), 
-                fontWeight = FontWeight.Medium,
-                fontSize = 13.sp
+                text = title,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Black,
+                color = if (isSelected) Color(0xFF1E293B) else Color(0xFF64748B),
+                maxLines = 1
             )
         }
     }

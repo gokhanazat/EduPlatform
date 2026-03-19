@@ -60,12 +60,8 @@ function CourseWatchContent() {
       setCourse(courseData)
 
       // Load Lessons
-      const { data: lessonsData } = await supabase.from("lessons").select("*").eq("course_id", id).order("order_index")
-      setLessons(lessonsData || [])
-
-      // Load Completions & Ensure Enrollment
       if (session?.user) {
-        // Check Enrollment first
+        // 1. Check/Ensure Enrollment (Critical for RLS)
         const { data: enrollment } = await supabase
           .from("enrollments")
           .select("*")
@@ -74,13 +70,33 @@ function CourseWatchContent() {
           .single()
 
         if (!enrollment) {
-          // Auto Enroll if not enrolled (since it's a private platform)
           await supabase.from("enrollments").upsert({
             course_id: id,
             profile_id: session.user.id
           })
         }
 
+        // 2. Now Fetch Lessons (After potential enrollment)
+        const { data: lessonsData } = await supabase
+          .from("lessons")
+          .select("*")
+          .eq("course_id", id)
+          .order("order_index")
+        
+        const fetchedLessons = lessonsData || []
+        setLessons(fetchedLessons)
+        
+        // Set Current Lesson
+        if (fetchedLessons.length > 0) {
+          if (currentLessonId) {
+            const match = fetchedLessons.find(l => l.id === currentLessonId)
+            setCurrentLesson(match || fetchedLessons[0])
+          } else if (!currentLesson) {
+            setCurrentLesson(fetchedLessons[0])
+          }
+        }
+
+        // 3. Load Completions
         const { data: completions } = await supabase
           .from("lesson_completions")
           .select("lesson_id")
@@ -88,16 +104,6 @@ function CourseWatchContent() {
         
         if (completions) {
           setCompletedLessonIds(completions.map(c => c.lesson_id))
-        }
-      }
-
-      // Set Current Lesson
-      if (lessonsData && lessonsData.length > 0) {
-        if (currentLessonId) {
-          const match = lessonsData.find(l => l.id === currentLessonId)
-          setCurrentLesson(match || lessonsData[0])
-        } else {
-          setCurrentLesson(lessonsData[0])
         }
       }
       setLoading(false)
@@ -246,12 +252,16 @@ function CourseWatchContent() {
                         </div>
                     </div>
 
-                    <article className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-lg">
+                    <article className="prose prose-slate max-w-none text-slate-900 leading-relaxed text-lg min-h-[200px]">
                         {currentLesson?.content_markdown ? (
-                            <ReactMarkdown>{currentLesson.content_markdown}</ReactMarkdown>
+                            <div className="markdown-container">
+                                <ReactMarkdown>{currentLesson.content_markdown}</ReactMarkdown>
+                            </div>
                         ) : (
-                            <div className="p-8 rounded-3xl bg-white border border-slate-100 text-slate-400 italic">
-                                {lessons.length > 0 ? "Bu ders için henüz bir açıklama girilmemiş." : "Bu eğitimde henüz bir ders bulunmuyor."}
+                            <div className="p-12 rounded-3xl bg-slate-50 border border-slate-100 text-slate-400 italic flex items-center justify-center text-center">
+                                {lessons.length > 0 
+                                    ? "Bu ders için henüz bir yazılı içerik hazırlanmamış." 
+                                    : "Bu eğitim kapsamında henüz bir ders içeriği bulunmuyor."}
                             </div>
                         )}
                     </article>
