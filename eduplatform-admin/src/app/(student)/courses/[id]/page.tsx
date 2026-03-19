@@ -21,14 +21,15 @@ import EnrollButton from "@/components/course/EnrollButton"
 
 export const dynamic = "force-dynamic"
 
-export default async function CourseDetailPage({ params }: { params: { id: string } }) {
+export default async function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createServerSupabase()
   const { data: { session } } = await supabase.auth.getSession()
 
   const { data: course } = await supabase
     .from("courses")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single()
 
   if (!course) notFound()
@@ -37,7 +38,7 @@ export default async function CourseDetailPage({ params }: { params: { id: strin
   const { data: enrollment } = await supabase
     .from("enrollments")
     .select("*")
-    .eq("course_id", params.id)
+    .eq("course_id", id)
     .eq("profile_id", session?.user.id)
     .single()
 
@@ -45,7 +46,7 @@ export default async function CourseDetailPage({ params }: { params: { id: strin
   const { data: lessons } = await supabase
     .from("lessons")
     .select("id, title, content_type, order_index")
-    .eq("course_id", params.id)
+    .eq("course_id", id)
     .order("order_index")
 
   return (

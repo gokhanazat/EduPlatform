@@ -180,7 +180,7 @@ export default function CourseEditPage() {
                 <CardContent className="p-8 space-y-6">
                     <div className="grid gap-3">
                         <Label className="font-bold text-slate-500 ml-1">Eğitim Başlığı</Label>
-                        <Input value={course.title} onChange={e => setCourse({...course, title: e.target.value})} placeholder="Örn: Sıfırdan İleri Seviye Kotlin" className="h-12 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white" />
+                        <Input value={course.title || ""} onChange={e => setCourse({...course, title: e.target.value})} placeholder="Örn: Sıfırdan İleri Seviye Kotlin" className="h-12 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white" />
                     </div>
                     <div className="p-6 rounded-[2rem] bg-indigo-50/50 border border-indigo-100 space-y-4">
                         <div className="flex items-center gap-2">
@@ -189,10 +189,10 @@ export default function CourseEditPage() {
                         </div>
                         <Textarea 
                             rows={5} 
-                            value={course.description} 
+                            value={course.description || ""} 
                             onChange={e => setCourse({...course, description: e.target.value})} 
                             placeholder="Eğitim hakkında detaylı bilgi verin..." 
-                            className="rounded-2xl bg-white border-slate-100 focus:bg-white resize-none shadow-sm p-4 text-slate-600 leading-relaxed" 
+                            className="rounded-2xl bg-white border-slate-100 focus:bg-white resize-none shadow-sm p-4 text-slate-800 leading-relaxed font-medium" 
                         />
                         <p className="text-[10px] text-slate-400 italic">Eğitim sayfasında bu alan "şık bir kart" olarak görüntülenecektir.</p>
                     </div>
@@ -209,7 +209,7 @@ export default function CourseEditPage() {
                             <div className="relative">
                                 <Input 
                                     list="category-list"
-                                    value={course.category} 
+                                    value={course.category || ""} 
                                     onChange={e => setCourse({...course, category: e.target.value})} 
                                     placeholder="Kategori seçin veya yazın..." 
                                     className="h-12 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white" 
@@ -347,7 +347,7 @@ export default function CourseEditPage() {
             <div className="flex-1 p-10 space-y-8 overflow-y-auto">
                 <div className="grid gap-3">
                     <Label className="font-bold text-slate-600">Ders Başlığı</Label>
-                    <Input value={editingLesson?.title} onChange={e => setEditingLesson({...editingLesson, title: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-slate-100" />
+                    <Input value={editingLesson?.title || ""} onChange={e => setEditingLesson({...editingLesson, title: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-slate-100" />
                 </div>
                 
                 <div className="grid gap-3">
@@ -371,7 +371,7 @@ export default function CourseEditPage() {
                 {editingLesson?.content_type === "text" ? (
                     <div className="grid gap-3">
                         <Label className="font-bold text-slate-600">İçerik (Markdown)</Label>
-                        <Textarea rows={12} value={editingLesson?.content_markdown} onChange={e => setEditingLesson({...editingLesson, content_markdown: e.target.value})} className="rounded-2xl bg-slate-50 border-slate-100 resize-none" />
+                        <Textarea rows={12} value={editingLesson?.content_markdown || ""} onChange={e => setEditingLesson({...editingLesson, content_markdown: e.target.value})} className="rounded-2xl bg-white border-slate-100 resize-none shadow-sm p-4 text-slate-800" />
                     </div>
                 ) : (
                     <div className="grid gap-3">
