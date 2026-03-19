@@ -34,10 +34,14 @@ class CourseViewModel(private val repository: CourseRepository) : BaseViewModel<
     override suspend fun handleIntent(intent: CourseIntent) {
         when (intent) {
             is CourseIntent.Load -> {
-                setState { copy(isLoading = true, error = null) }
+                val hardcodedCategories = listOf("Yazılım", "Tasarım", "İş Dünyası", "Pazarlama", "Müzik", "Fotoğrafçılık", "Kişisel Gelişim")
+                setState { copy(isLoading = true, error = null, categories = hardcodedCategories) }
                 repository.getAllCourses().onSuccess { list ->
                     setState { copy(courses = list, filteredCourses = applyFilters(list, selectedCategory, searchQuery)) }
-                    repository.getCategories().onSuccess { cats -> setState { copy(categories = cats) } }
+                    repository.getCategories().onSuccess { cats -> 
+                        val allCats = (hardcodedCategories + cats).distinct()
+                        setState { copy(categories = allCats) } 
+                    }
                 }.onError { message ->
                     setState { copy(error = message) }
                 }
