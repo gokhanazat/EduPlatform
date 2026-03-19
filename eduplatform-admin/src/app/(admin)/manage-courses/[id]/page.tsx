@@ -14,18 +14,13 @@ import { useToast } from "@/components/ui/use-toast"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Trash2, Plus, GripVertical, FileText, Video as VideoIcon, ArrowLeft, Save, Layout, ListOrdered, BookOpen } from "lucide-react"
 import Link from "next/link"
-import { adminSaveCourse } from "@/app/actions/admin-actions"
+import { adminSaveCourse, adminGetCourse, adminGetLessons, adminSaveLesson } from "@/app/actions/admin-actions"
 
 export default function CourseEditPage() {
   const params = useParams()
   const router = useRouter()
   
-  // Robust ID detection from multiple sources
-  const idStr = Array.isArray(params.id) ? params.id[0] : params.id
-  const urlPath = typeof window !== 'undefined' ? window.location.pathname : ''
-  const idFromPath = urlPath.split('/').pop()
-  
-  const id = idStr || (idFromPath === 'new' ? 'new' : idFromPath) || "undefined"
+  const id = (Array.isArray(params.id) ? params.id[0] : params.id) || "new"
   const isNew = id === "new"
   
   const { toast } = useToast()
@@ -64,22 +59,22 @@ export default function CourseEditPage() {
 
   async function loadCourse() {
     if (!id || id === "new") return
-    const { data, error } = await supabase.from("courses").select("*").eq("id", id).single()
-    if (error) {
-      console.error("Kurs yükleme hatası:", error)
+    const res = await adminGetCourse(id)
+    if (res.error) {
+      console.error("Kurs yükleme hatası:", res.error)
       return
     }
-    if (data) setCourse(data)
+    if (res.data) setCourse(res.data)
   }
 
   async function loadLessons() {
     if (!id || id === "new") return
-    const { data, error } = await supabase.from("lessons").select("*").eq("course_id", id).order("order_index")
-    if (error) {
-       console.error("Ders yükleme hatası:", error)
+    const res = await adminGetLessons(id)
+    if (res.error) {
+       console.error("Ders yükleme hatası:", res.error)
        return
     }
-    setLessons(data || [])
+    setLessons(res.data || [])
   }
 
   async function deleteLesson(lessonId: string) {
@@ -140,9 +135,9 @@ export default function CourseEditPage() {
       order_index: lessonData.order_index ?? lessons.length
     }
     
-    const { error } = await supabase.from("lessons").upsert(payload)
-    if (error) {
-      toast({ title: "Hata", description: error.message, variant: "destructive" })
+    const res = await adminSaveLesson(payload)
+    if (res.error) {
+      toast({ title: "Hata", description: res.error, variant: "destructive" })
     } else {
       setShowLessonForm(false)
       toast({ title: "Ders Kaydedildi", description: "Müfredat güncellendi." })

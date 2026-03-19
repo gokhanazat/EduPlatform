@@ -49,3 +49,36 @@ export async function adminDeleteCourse(courseId: string) {
     return { success: false, error: error.message }
   }
 }
+
+export async function adminGetCourse(courseId: string) {
+  try {
+    const { data, error } = await supabaseAdmin.from("courses").select("*").eq("id", courseId).single()
+    if (error) throw error
+    return { data, error: null }
+  } catch (error: any) {
+    console.error("Get course error:", error)
+    return { data: null, error: error.message }
+  }
+}
+
+export async function adminGetLessons(courseId: string) {
+  try {
+    const { data, error } = await supabaseAdmin.from("lessons").select("*").eq("course_id", courseId).order("order_index")
+    if (error) throw error
+    return { data, error: null }
+  } catch (error: any) {
+    console.error("Get lessons error:", error)
+    return { data: null, error: error.message }
+  }
+}
+
+export async function adminSaveLesson(payload: any) {
+  try {
+    const { data, error } = await supabaseAdmin.from("lessons").upsert(payload).select().single()
+    if (error) throw error
+    return { data, error: null }
+  } catch (error: any) {
+    console.error("Save lesson error:", error)
+    return { data: null, error: error.message }
+  }
+}
