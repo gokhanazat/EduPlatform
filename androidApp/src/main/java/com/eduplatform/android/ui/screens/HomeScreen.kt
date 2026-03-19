@@ -102,8 +102,8 @@ fun HomeScreen(navController: NavHostController) {
 
             // 2. Arama Çubuğu
             OutlinedTextField(
-                value = "",
-                onValueChange = { },
+                value = state.searchQuery,
+                onValueChange = { vm.onIntent(CourseIntent.Search(it)) },
                 placeholder = { Text("Ne öğrenmek istersiniz?", color = Color(0xFF94A3B8), fontSize = 14.sp) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -136,19 +136,28 @@ fun HomeScreen(navController: NavHostController) {
                 Text("Hepsini Gör", color = Color(0xFF3B82F6), fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
 
-            val categories = listOf(
-                CategoryItem("Yazılım", Icons.Default.Code),
-                CategoryItem("Tasarım", Icons.Default.Palette),
-                CategoryItem("Pazarlama", Icons.Default.TrendingUp),
-                CategoryItem("Finans", Icons.Default.Payments)
-            )
-
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(categories) { cat ->
-                    CategoryChip(cat.title, cat.icon, cat.title == "Yazılım")
+                // ALL CATEGORY
+                item {
+                    CategoryChip(
+                        title = "Hepsi", 
+                        icon = Icons.Default.AllInclusive, 
+                        isSelected = state.selectedCategory == null,
+                        onClick = { vm.onIntent(CourseIntent.FilterCategory(null)) }
+                    )
+                }
+                
+                items(state.categories) { cat ->
+                    val isSelected = state.selectedCategory == cat
+                    CategoryChip(
+                        title = cat, 
+                        icon = getIconForCategory(cat), 
+                        isSelected = isSelected,
+                        onClick = { vm.onIntent(CourseIntent.FilterCategory(cat)) }
+                    )
                 }
             }
 
@@ -191,14 +200,27 @@ fun HomeScreen(navController: NavHostController) {
     }
 }
 
-data class CategoryItem(val title: String, val icon: ImageVector)
+fun getIconForCategory(category: String): ImageVector {
+    return when (category) {
+        "Yazılım", "Programlama" -> Icons.Default.Code
+        "Tasarım" -> Icons.Default.Palette
+        "İş Dünyası" -> Icons.Default.BusinessCenter
+        "Pazarlama" -> Icons.Default.Campaign
+        "Müzik" -> Icons.Default.MusicNote
+        "Fotoğrafçılık" -> Icons.Default.CameraAlt
+        "Kişisel Gelişim" -> Icons.Default.Star
+        else -> Icons.Default.Book
+    }
+}
 
 @Composable
-fun CategoryChip(title: String, icon: ImageVector, isSelected: Boolean) {
+fun CategoryChip(title: String, icon: ImageVector, isSelected: Boolean, onClick: () -> Unit) {
     Surface(
         color = if (isSelected) Color(0xFF3B82F6) else Color(0xFFF1F5F9),
         shape = RoundedCornerShape(12.dp),
-        modifier = Modifier.height(40.dp)
+        modifier = Modifier
+            .height(40.dp)
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp),
