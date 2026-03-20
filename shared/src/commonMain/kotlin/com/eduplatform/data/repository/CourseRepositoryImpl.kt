@@ -22,19 +22,22 @@ class CourseRepositoryImpl(
         return when (apiResult) {
             is Result.Success -> {
                 val domainList = apiResult.data.map { it.toDomain() }
-                domainList.forEach { course ->
-                    queries.insertCourse(
-                        id = course.id,
-                        title = course.title,
-                        description = course.description,
-                        category = course.category,
-                        city = course.city,
-                        instructorName = course.instructorName,
-                        durationMinutes = course.durationMinutes,
-                        hasCertificate = course.hasCertificate,
-                        isPublished = course.isPublished,
-                        thumbnailUrl = course.thumbnailUrl
-                    )
+                queries.transaction {
+                    queries.deleteAllCourses()
+                    domainList.forEach { course ->
+                        queries.insertCourse(
+                            id = course.id,
+                            title = course.title,
+                            description = course.description,
+                            category = course.category,
+                            city = course.city,
+                            instructorName = course.instructorName,
+                            durationMinutes = course.durationMinutes,
+                            hasCertificate = course.hasCertificate,
+                            isPublished = course.isPublished,
+                            thumbnailUrl = course.thumbnailUrl
+                        )
+                    }
                 }
                 Result.Success(domainList)
             }

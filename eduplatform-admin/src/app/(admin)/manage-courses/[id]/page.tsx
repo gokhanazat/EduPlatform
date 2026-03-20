@@ -368,15 +368,27 @@ export default function CourseEditPage() {
                     </div>
                 </div>
 
-                {editingLesson?.content_type === "text" ? (
-                    <div className="grid gap-3">
-                        <Label className="font-bold text-slate-600">İçerik (Markdown)</Label>
-                        <Textarea rows={12} value={editingLesson?.content_markdown || ""} onChange={e => setEditingLesson({...editingLesson, content_markdown: e.target.value})} className="rounded-2xl bg-white border-slate-100 resize-none shadow-sm p-4 text-slate-800" />
-                    </div>
-                ) : (
+                <div className="grid gap-3">
+                    <Label className="font-bold text-slate-600">Ders Notları / Yazılı İçerik (Markdown)</Label>
+                    <Textarea 
+                      rows={12} 
+                      value={editingLesson?.content_markdown || ""} 
+                      onChange={e => setEditingLesson({...editingLesson, content_markdown: e.target.value})} 
+                      className="rounded-2xl bg-white border-slate-100 resize-none shadow-sm p-4 text-slate-800" 
+                      placeholder="Bu ders için notları veya metin içeriğini buraya yazın..."
+                    />
+                    <p className="text-[10px] text-slate-400 italic">Videolu derslerde bu alan videonun altında "Ders Notu" olarak görüntülenecektir.</p>
+                </div>
+
+                {editingLesson?.content_type === "video" && (
                     <div className="grid gap-3">
                         <Label className="font-bold text-slate-600">Video Linki (URL)</Label>
-                        <Input value={editingLesson?.video_url} onChange={e => setEditingLesson({...editingLesson, video_url: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-slate-100" placeholder="https://youtube.com/..." />
+                        <Input 
+                          value={editingLesson?.video_url || ""} 
+                          onChange={e => setEditingLesson({...editingLesson, video_url: e.target.value})} 
+                          className="h-12 rounded-xl bg-slate-50 border-slate-100" 
+                          placeholder="Örn: https://www.youtube.com/watch?v=..." 
+                        />
                     </div>
                 )}
             </div>

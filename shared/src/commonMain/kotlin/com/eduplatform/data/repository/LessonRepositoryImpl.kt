@@ -21,16 +21,19 @@ class LessonRepositoryImpl(
         return when (apiResult) {
             is Result.Success -> {
                 val domainList = apiResult.data.map { it.toDomain() }
-                domainList.forEach { lesson ->
-                    queries.insertLesson(
-                        id = lesson.id,
-                        courseId = lesson.courseId,
-                        title = lesson.title,
-                        contentType = lesson.contentType,
-                        contentMarkdown = lesson.contentMarkdown,
-                        videoUrl = lesson.videoUrl,
-                        orderIndex = lesson.orderIndex
-                    )
+                queries.transaction {
+                    queries.deleteLessonsForCourse(courseId)
+                    domainList.forEach { lesson ->
+                        queries.insertLesson(
+                            id = lesson.id,
+                            courseId = lesson.courseId,
+                            title = lesson.title,
+                            contentType = lesson.contentType,
+                            contentMarkdown = lesson.contentMarkdown,
+                            videoUrl = lesson.videoUrl,
+                            orderIndex = lesson.orderIndex
+                        )
+                    }
                 }
                 Result.Success(domainList)
             }

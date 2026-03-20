@@ -21,12 +21,22 @@ import {
 import { Input } from "@/components/ui/input"
 import { createServerSupabase } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { Suspense } from "react"
+import CategoryFilter from "@/components/home/CategoryFilter"
+import SearchInput from "@/components/home/SearchInput"
 
 export const dynamic = "force-dynamic"
 
-export default async function LandingPage() {
+export default async function LandingPage({
+  searchParams,
+}: {
+  searchParams: { search?: string; category?: string };
+}) {
   const supabase = await createServerSupabase()
   const { data: { session } } = await supabase.auth.getSession()
+  
+  const query = searchParams.search || ""
+  const currentCategory = searchParams.category || "Hepsi"
   
   let isAdmin = false
   let userProfile = null
@@ -43,31 +53,24 @@ export default async function LandingPage() {
   }
   
   // Real course fetching with bypass for visibility
-  const { data: realCourses } = await supabaseAdmin
+  let supabaseQuery = supabaseAdmin
     .from("courses")
     .select("*")
     .eq("is_published", true)
-    .limit(5)
-    .order("created_at", { ascending: false })
+
+  if (query) {
+    supabaseQuery = supabaseQuery.ilike("title", `%${query}%`)
+  }
+
+  if (currentCategory !== "Hepsi") {
+    supabaseQuery = supabaseQuery.eq("category", currentCategory)
+  }
+
+  const { data: realCourses } = await supabaseQuery.order("created_at", { ascending: false })
 
   const { data: catData } = await supabaseAdmin.from("courses").select("category").eq("is_published", true)
   const uniqueCats = Array.from(new Set(catData?.map(c => c.category) || []))
-  
-  const iconMap: any = {
-    "Programlama": { icon: Code, color: "text-blue-500", bg: "bg-blue-50" },
-    "Tasarım": { icon: Palette, color: "text-purple-500", bg: "bg-purple-50" },
-    "İş Dünyası": { icon: Briefcase, color: "text-emerald-500", bg: "bg-emerald-50" },
-    "Pazarlama": { icon: Megaphone, color: "text-orange-500", bg: "bg-orange-50" },
-    "Müzik": { icon: Music, color: "text-red-500", bg: "bg-red-50" },
-    "Fotoğrafçılık": { icon: Camera, color: "text-teal-500", bg: "bg-teal-50" },
-    "Yazılım": { icon: Code, color: "text-blue-500", bg: "bg-blue-50" },
-    "Kişisel Gelişim": { icon: Star, color: "text-amber-500", bg: "bg-amber-50" },
-  }
-
-  const categories = uniqueCats.map(cat => ({
-    name: cat,
-    ...(iconMap[cat] || { icon: BookOpen, color: "text-indigo-500", bg: "bg-indigo-50" })
-  }))
+  const categories = ["Hepsi", ...uniqueCats]
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -125,29 +128,17 @@ export default async function LandingPage() {
           />
         </section>
 
-        {/* Top Categories */}
-        <section className="space-y-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Popüler Kategoriler</h2>
-            <Link href="/home" className="text-sm font-bold text-primary flex items-center gap-1 hover:underline">
-                Tümünü Gör <ChevronRight size={14} />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-            {categories.map((cat, i) => (
-              <Link href={`/home?category=${cat.name}`} key={i}>
-                <Card className="border-none shadow-sm hover:shadow-2xl hover:shadow-indigo-100/50 transition-all cursor-pointer rounded-[2.5rem] group bg-slate-50/50 border border-slate-100 hover:bg-white">
-                    <CardContent className="p-10 flex flex-col items-center gap-5">
-                    <div className={`w-14 h-14 rounded-2xl ${cat.bg} ${cat.color} flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm`}>
-                        <cat.icon size={28} />
-                    </div>
-                    <span className="text-sm font-black text-slate-700 uppercase tracking-wider">{cat.name}</span>
-                    </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {/* Categories & Search - Same as Home */}
+        <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+            <Suspense fallback={<div className="h-12 w-full lg:w-96 bg-slate-50 animate-pulse rounded-2xl" />}>
+                <CategoryFilter categories={categories} currentCategory={currentCategory} />
+            </Suspense>
+            <div className="flex items-center gap-3 w-full lg:w-auto">
+                <Suspense fallback={<div className="h-12 w-80 bg-slate-50 animate-pulse rounded-2xl" />}>
+                    <SearchInput defaultValue={query} />
+                </Suspense>
+            </div>
+        </div>
 
         {/* Popular Courses */}
         <section className="space-y-8 pb-20">

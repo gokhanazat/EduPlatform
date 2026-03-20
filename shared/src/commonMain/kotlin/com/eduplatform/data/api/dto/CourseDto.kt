@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class CourseDto(
     val id: String? = null,
     val title: String,
-    val description: String,
+    val description: String?,
     val category: String,
     val city: String? = null, // YENİ: Şehir bilgisi eklendi
     val instructor_name: String,

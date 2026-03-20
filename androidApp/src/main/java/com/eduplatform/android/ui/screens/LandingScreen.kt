@@ -144,8 +144,24 @@ fun LandingScreen(navController: NavHostController) {
                 contentPadding = PaddingValues(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                val categories = listOf("Yazılım", "Tasarım", "Pazarlama", "Finans")
-                items(categories) { cat ->
+                // "Hepsi" her zaman en başta
+                item {
+                    Surface(
+                        color = Color(0xFF3B82F6),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.height(40.dp).clickable { navController.navigate(Screen.Login.route) }
+                    ) {
+                        Text(
+                            "Hepsi", 
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp), 
+                            fontSize = 13.sp, 
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+                
+                items(state.categories) { cat ->
                     Surface(
                         color = Color(0xFFF1F5F9),
                         shape = RoundedCornerShape(12.dp),
@@ -165,17 +181,23 @@ fun LandingScreen(navController: NavHostController) {
                 modifier = Modifier.padding(start = 20.dp, top = 32.dp, bottom = 16.dp)
             )
 
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                state.filteredCourses.chunked(2).forEach { rowCourses ->
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        rowCourses.forEach { course ->
-                            Box(modifier = Modifier.weight(1f)) {
-                                LandingCourseGridItem(course) { navController.navigate(Screen.Login.route) }
+            if (state.isLoading) {
+                Box(Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = Color(0xFF3B82F6))
+                }
+            } else {
+                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    state.filteredCourses.chunked(2).forEach { rowCourses ->
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            rowCourses.forEach { course ->
+                                Box(modifier = Modifier.weight(1f)) {
+                                    LandingCourseGridItem(course) { navController.navigate(Screen.Login.route) }
+                                }
                             }
+                            if (rowCourses.size == 1) Spacer(modifier = Modifier.weight(1f))
                         }
-                        if (rowCourses.size == 1) Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
                 }
             }
 

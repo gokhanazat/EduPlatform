@@ -34,18 +34,18 @@ class CourseViewModel(private val repository: CourseRepository) : BaseViewModel<
     override suspend fun handleIntent(intent: CourseIntent) {
         when (intent) {
             is CourseIntent.Load -> {
-                val hardcodedCategories = listOf("Yazılım", "Tasarım", "İş Dünyası", "Pazarlama", "Müzik", "Fotoğrafçılık", "Kişisel Gelişim")
-                setState { copy(isLoading = true, error = null, categories = hardcodedCategories) }
+                setState { copy(isLoading = true, error = null) }
                 repository.getAllCourses().onSuccess { list ->
-                    setState { copy(courses = list, filteredCourses = applyFilters(list, selectedCategory, searchQuery)) }
-                    repository.getCategories().onSuccess { cats -> 
-                        val allCats = (hardcodedCategories + cats).distinct()
-                        setState { copy(categories = allCats) } 
-                    }
+                    val dynamicCats = list.map { it.category }.distinct()
+                    setState { copy(
+                        courses = list, 
+                        categories = dynamicCats,
+                        isLoading = false,
+                        filteredCourses = applyFilters(list, selectedCategory, searchQuery)
+                    ) }
                 }.onError { message ->
-                    setState { copy(error = message) }
+                    setState { copy(isLoading = false, error = message) }
                 }
-                setState { copy(isLoading = false) }
             }
             is CourseIntent.LoadUserEntries -> {
                 repository.getEnrolledCourses(intent.userId).onSuccess { list ->

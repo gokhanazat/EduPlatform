@@ -66,3 +66,9 @@ VALUES (?, ?, ?, ?, ?, ?, ?);
 
 selectLessonsForCourse:
 SELECT * FROM LessonEntity WHERE courseId = ? ORDER BY orderIndex;
+
+deleteAllCourses:
+DELETE FROM CourseEntity;
+
+deleteLessonsForCourse:
+DELETE FROM LessonEntity WHERE courseId = ?;

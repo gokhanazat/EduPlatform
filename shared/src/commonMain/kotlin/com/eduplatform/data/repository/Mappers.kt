@@ -7,7 +7,7 @@ import com.eduplatform.domain.model.*
 fun CourseDto.toDomain(): Course = Course(
     id = id ?: "",
     title = title,
-    description = description,
+    description = description ?: "Bu eğitim için henüz bir açıklama eklenmemiş.",
     category = category,
     city = city ?: "Belirtilmemiş",
     instructorName = instructor_name,

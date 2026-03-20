@@ -57,3 +57,13 @@
 .btn-primary {
   @apply bg-primary text-white px-6 py-2.5 rounded-2xl font-semibold shadow-lg shadow-indigo-200 hover:bg-primary/90 hover:shadow-indigo-300 transition-all active:scale-95;
 }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

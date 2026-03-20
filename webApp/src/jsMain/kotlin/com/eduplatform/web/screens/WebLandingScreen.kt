@@ -61,40 +61,91 @@ fun WebLandingScreen(onNav: (String) -> Unit) {
             }
         }
 
-        // 2. KATEGORİLER (Admin'den Gelenler)
-        Section({ style { padding(60.px) } }) {
-            Div({ style { display(DisplayStyle.Flex); justifyContent(JustifyContent.SpaceBetween); alignItems(AlignItems.Center); marginBottom(32.px) } }) {
-                H2({ style { fontWeight(700) } }) { Text("Popüler Kategoriler") }
-                Span({ style { color(Color("#3B82F6")); cursor("pointer"); fontWeight(600) } }) { Text("Tümünü Gör") }
-            }
-            
+        // 2. KATEGORİLER VE ARAMA (Pills + Search)
+        Section({ 
+            style { 
+                padding(0.px, 60.px, 40.px, 60.px)
+            } 
+        }) {
             Div({
                 style {
-                    display(DisplayStyle.Grid)
-                    gap(20.px)
-                    property("grid-template-columns", "repeat(auto-fill, minmax(160.px, 1fr))")
+                    display(DisplayStyle.Flex)
+                    justifyContent(JustifyContent.SpaceBetween)
+                    alignItems(AlignItems.Center)
+                    gap(24.px)
+                    backgroundColor(Color.white)
+                    padding(16.px, 24.px)
+                    borderRadius(24.px)
+                    property("box-shadow", "0 4px 20px rgba(0,0,0,0.03)")
                 }
             }) {
-                state.categories.forEach { category ->
+                // Sol Taraf: Kategori Pill'leri
+                Div({
+                    style {
+                        display(DisplayStyle.Flex)
+                        gap(10.px)
+                        property("overflow-x", "auto")
+                        property("flex", "1")
+                        property("scrollbar-width", "none") // Firefox
+                        property("-ms-overflow-style", "none") // IE/Edge
+                    }
+                }) {
+                    // Hepsi Filtresi
                     Div({
                         style {
-                            backgroundColor(Color.white); padding(24.px); borderRadius(16.px)
-                            textAlign("center"); cursor("pointer"); property("transition", "transform 0.2s")
-                            property("box-shadow", "0 1px 3px rgba(0,0,0,0.1)")
+                            padding(10.px, 24.px)
+                            borderRadius(12.px)
+                            fontSize(14.px)
+                            fontWeight(700)
+                            cursor("pointer")
+                            backgroundColor(if (state.selectedCategory == null) Color("#3B82F6") else Color("#F1F5F9"))
+                            color(if (state.selectedCategory == null) Color.white else Color("#64748B"))
+                            property("transition", "all 0.2s")
+                            property("white-space", "nowrap")
                         }
-                        onClick { vm.onIntent(CourseIntent.FilterCategory(category)) ; onNav("/home") }
-                    }) {
+                        onClick { vm.onIntent(CourseIntent.FilterCategory("Hepsi")) }
+                    }) { Text("Hepsi") }
+
+                    state.categories.forEach { category ->
+                        val isSelected = state.selectedCategory == category
                         Div({
                             style {
-                                width(48.px); height(48.px); backgroundColor(Color("#EFF6FF"))
-                                borderRadius(12.px); property("margin", "0 auto")
-                                marginBottom(16.px); display(DisplayStyle.Flex); alignItems(AlignItems.Center)
-                                justifyContent(JustifyContent.Center)
+                                padding(10.px, 24.px)
+                                borderRadius(12.px)
+                                fontSize(14.px)
+                                fontWeight(700)
+                                cursor("pointer")
+                                backgroundColor(if (isSelected) Color("#3B82F6") else Color.white)
+                                color(if (isSelected) Color.white else Color("#64748B"))
+                                property("border", "1px solid " + if (isSelected) "#3B82F6" else "#F1F5F9")
+                                property("transition", "all 0.2s")
+                                property("white-space", "nowrap")
                             }
-                        }) {
-                            Text("📁") // Kategori ikonu placeholder
+                            onClick { vm.onIntent(CourseIntent.FilterCategory(category)) }
+                        }) { Text(category) }
+                    }
+                }
+
+                // Sağ Taraf: Arama Girişi
+                Div({
+                    style {
+                        position(Position.Relative)
+                        width(320.px)
+                    }
+                }) {
+                    Input(InputType.Search) {
+                        placeholder("Eğitim başlığı ile ara...")
+                        value(state.searchQuery)
+                        onInput { vm.onIntent(CourseIntent.Search(it.value)) }
+                        style {
+                            width(100.percent)
+                            padding(12.px, 20.px)
+                            borderRadius(16.px)
+                            border(1.px, LineStyle.Solid, Color("#F1F5F9"))
+                            backgroundColor(Color("#F8FAFC"))
+                            fontSize(14.px)
+                            outline("none")
                         }
-                        Div({ style { fontWeight(600); fontSize(14.px) } }) { Text(category) }
                     }
                 }
             }
@@ -102,7 +153,9 @@ fun WebLandingScreen(onNav: (String) -> Unit) {
 
         // 3. POPÜLER EĞİTİMLER
         Section({ style { padding(0.px, 60.px, 60.px, 60.px) } }) {
-            H2({ style { fontWeight(700); marginBottom(32.px) } }) { Text("Öne Çıkan Eğitimler") }
+            H2({ style { fontWeight(700); marginBottom(32.px) } }) { 
+                Text(if (state.searchQuery.isNotEmpty()) "Arama Sonuçları" else "Öne Çıkan Eğitimler") 
+            }
             
             Div({
                 style {
@@ -111,8 +164,14 @@ fun WebLandingScreen(onNav: (String) -> Unit) {
                     property("grid-template-columns", "repeat(auto-fill, minmax(280.px, 1fr))")
                 }
             }) {
-                state.courses.take(4).forEach { course ->
+                state.filteredCourses.forEach { course ->
                     LandingCourseCard(course, onNav)
+                }
+            }
+
+            if (state.filteredCourses.isEmpty()) {
+                Div({ style { textAlign("center"); padding(40.px); color(Color.gray) } }) {
+                    Text("Sonuç bulunamadı.")
                 }
             }
         }

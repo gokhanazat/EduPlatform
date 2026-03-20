@@ -205,26 +205,36 @@ fun HomeScreen(navController: NavHostController) {
 
 fun getIconForCategory(category: String): ImageVector {
     return when (category) {
+        "Enerji" -> Icons.Default.Bolt
+        "İşletme Yönetimi" -> Icons.Default.BusinessCenter
+        "Markalaşma" -> Icons.Default.Verified
+        "İnovasyon" -> Icons.Default.Lightbulb
+        "Dijitalleşme" -> Icons.Default.Devices
+        "Ekonomi" -> Icons.Default.AccountBalance
+        "Çevre Yönetimi" -> Icons.Default.Eco
         "Yazılım", "Programlama" -> Icons.Default.Code
         "Tasarım" -> Icons.Default.Palette
-        "İş Dünyası" -> Icons.Default.BusinessCenter
-        "Pazarlama" -> Icons.Default.Campaign
-        "Müzik" -> Icons.Default.MusicNote
-        "Fotoğrafçılık" -> Icons.Default.CameraAlt
         "Kişisel Gelişim" -> Icons.Default.Star
+        "Yabancı Dil" -> Icons.Default.Language
+        "Sınav Hazırlık" -> Icons.Default.Assignment
         else -> Icons.Default.Book
     }
 }
 
 fun getCategoryColor(category: String): Color {
     return when (category) {
+        "Enerji" -> Color(0xFFFFB300) // Amber
+        "İşletme Yönetimi" -> Color(0xFF3B82F6) // Blue
+        "Markalaşma" -> Color(0xFF8B5CF6) // Purple
+        "İnovasyon" -> Color(0xFFF97316) // Orange
+        "Dijitalleşme" -> Color(0xFF10B981) // Emerald
+        "Ekonomi" -> Color(0xFF71717A) // Gray
+        "Çevre Yönetimi" -> Color(0xFF22C55E) // Green
         "Yazılım", "Programlama" -> Color(0xFF3B82F6) // Blue
         "Tasarım" -> Color(0xFFA855F7) // Purple
-        "İş Dünyası" -> Color(0xFF10B981) // Emerald
-        "Pazarlama" -> Color(0xFFF97316) // Orange
-        "Müzik" -> Color(0xFFEF4444) // Red
-        "Fotoğrafçılık" -> Color(0xFF14B8A6) // Teal
-        "Kişisel Gelişim" -> Color(0xFFF59E0B) // Amber
+        "Kişisel Gelişim" -> Color(0xFFFFD700) // Gold
+        "Yabancı Dil" -> Color(0xFF2DD4BF) // Teal
+        "Sınav Hazırlık" -> Color(0xFFF43F5E) // Rose
         else -> Color(0xFF6366F1) // Indigo
     }
 }
