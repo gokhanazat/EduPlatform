@@ -84,14 +84,14 @@ export default function LoginPage() {
         </Link>
         
         <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <Link href="/courses" className="hover:text-blue-600 transition-colors">Courses</Link>
-            <Link href="/about" className="hover:text-blue-600 transition-colors">About</Link>
+            <Link href="/" className="hover:text-blue-600 transition-colors">Ana Sayfa</Link>
+            <Link href="/courses" className="hover:text-blue-600 transition-colors">Eğitimler</Link>
+            <Link href="/about" className="hover:text-blue-600 transition-colors">Hakkımızda</Link>
         </nav>
 
         <Link href="/register">
             <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 font-bold text-sm h-10 shadow-sm transition-all">
-                Sign Up
+                Kayıt Ol
             </Button>
         </Link>
       </header>
@@ -105,35 +105,26 @@ export default function LoginPage() {
             <img 
               src="/login-bg.png" 
               alt="Login background" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover scale-105"
             />
-            <div className="absolute inset-0 bg-blue-600/60 backdrop-blur-[1px]"></div>
+            <div className="absolute inset-0 bg-blue-600/40 backdrop-blur-[1px]"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 via-transparent to-transparent"></div>
-            
-            <div className="absolute bottom-16 left-12 right-12 space-y-4">
-              <h2 className="text-4xl font-black text-white leading-tight tracking-tight">
-                Elevate Your Career
-              </h2>
-              <p className="text-base text-blue-50/90 font-medium leading-relaxed">
-                Join over 10,000 students learning the most in-demand skills in tech, design, and business.
-              </p>
-            </div>
           </div>
 
           {/* Right Side - Form */}
           <div className="w-full md:w-7/12 flex flex-col justify-center p-10 md:px-16 lg:px-20 relative bg-white">
             <div className="max-w-md w-full mx-auto space-y-8">
               <div className="space-y-2">
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
-                <p className="text-slate-500 text-sm font-medium">Please enter your details to sign in.</p>
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Tekrar Hoş Geldiniz</h2>
+                <p className="text-slate-500 text-sm font-medium">Giriş yapmak için bilgilerinizi giriniz.</p>
               </div>
 
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
-                  <Label className="text-[13px] font-bold text-slate-700">Email Address</Label>
+                  <Label className="text-[13px] font-bold text-slate-700">E-posta Adresi</Label>
                   <Input 
                     type="email" 
-                    placeholder="name@university.edu" 
+                    placeholder="isim@universite.edu" 
                     className="h-12 rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500/10 transition-all font-medium text-slate-900"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -143,8 +134,8 @@ export default function LoginPage() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-[13px] font-bold text-slate-700">Password</Label>
-                    <Link href="#" className="text-[12px] font-bold text-blue-600 hover:text-blue-700">Forgot password?</Link>
+                    <Label className="text-[13px] font-bold text-slate-700">Şifre</Label>
+                    <Link href="#" className="text-[12px] font-bold text-blue-600 hover:text-blue-700">Şifremi Unuttum</Link>
                   </div>
                   <div className="relative">
                     <Input 
@@ -167,7 +158,7 @@ export default function LoginPage() {
 
                 <div className="flex items-center gap-2">
                     <input type="checkbox" id="remember" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
-                    <label htmlFor="remember" className="text-sm font-medium text-slate-500 cursor-pointer">Remember me for 30 days</label>
+                    <label htmlFor="remember" className="text-sm font-medium text-slate-500 cursor-pointer">30 gün boyunca beni hatırla</label>
                 </div>
 
                 {error && (
@@ -177,7 +168,7 @@ export default function LoginPage() {
                 )}
 
                 <Button type="submit" className="w-full h-12 rounded-lg font-bold text-base bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-100 transition-all" disabled={loading}>
-                  {loading ? "Signing In..." : "Sign In"}
+                  {loading ? "Giriş Yapılıyor..." : "Giriş Yap"}
                 </Button>
               </form>
 
@@ -186,7 +177,7 @@ export default function LoginPage() {
                   <span className="w-full border-t border-slate-100"></span>
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase">
-                  <span className="bg-white px-4 text-slate-400 font-bold tracking-widest">or continue with</span>
+                  <span className="bg-white px-4 text-slate-400 font-bold tracking-widest">veya şununla devam edin</span>
                 </div>
               </div>
 
@@ -200,8 +191,8 @@ export default function LoginPage() {
               </div>
 
               <div className="text-center font-bold text-slate-500 text-[13px]">
-                Don't have an account?{" "}
-                <Link href="/register" className="text-blue-600 hover:text-blue-700">Create an account</Link>
+                Hesabınız yok mu?{" "}
+                <Link href="/register" className="text-blue-600 hover:text-blue-700">Hesap oluştur</Link>
               </div>
             </div>
           </div>
@@ -211,7 +202,7 @@ export default function LoginPage() {
       {/* Footer */}
       <footer className="w-full py-8 text-center bg-white md:bg-transparent">
           <p className="text-[11px] text-slate-400 font-medium">
-            © 2026 ITSO Akademi Eğitim Sistemleri. Professional tools for professional learners.
+            © 2026 ITSO Akademi Eğitim Sistemleri. Profesyonel öğrenenler için profesyonel araçlar.
           </p>
       </footer>
     </div>
