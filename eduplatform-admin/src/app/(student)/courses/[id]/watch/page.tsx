@@ -194,12 +194,31 @@ function CourseWatchContent() {
                             />
                         </div>
                     ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-white p-12 text-center">
-                            <div className="w-20 h-20 rounded-3xl bg-indigo-50 text-primary flex items-center justify-center mb-6">
-                                <FileText size={40} />
+                        <div className="w-full h-full bg-white overflow-hidden flex flex-col">
+                            <div className="p-8 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center">
+                                        <FileText size={22} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-black text-slate-900">{currentLesson?.title}</h2>
+                                        <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Ders Notları & Okuma Materyali</p>
+                                    </div>
+                                </div>
                             </div>
-                            <h2 className="text-3xl font-black text-slate-900 mb-4">{currentLesson?.title}</h2>
-                            <p className="text-slate-500 max-w-md">Bu ders metin bazlı bir içeriktir. İçeriği aşağıdan okuyabilirsiniz.</p>
+                            <div className="flex-1 overflow-y-auto p-12 custom-scrollbar">
+                                <article className="max-w-3xl mx-auto">
+                                    {currentLesson?.content_markdown ? (
+                                        <div className="markdown-content">
+                                            <ReactMarkdown>{currentLesson.content_markdown}</ReactMarkdown>
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-20 text-slate-400 italic">
+                                            Bu ders için henüz bir içerik girilmemiş.
+                                        </div>
+                                    )}
+                                </article>
+                            </div>
                         </div>
                     )}
                     
@@ -232,7 +251,11 @@ function CourseWatchContent() {
                              <h1 className="text-3xl font-black text-slate-900 tracking-tight">{currentLesson?.title || course?.title}</h1>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Button variant="outline" className="h-12 border-slate-200 bg-white hover:bg-slate-50 font-bold rounded-2xl px-6 gap-2 text-slate-600">
+                            <Button 
+                                variant="outline" 
+                                onClick={() => document.getElementById('lesson-notes')?.scrollIntoView({ behavior: 'smooth' })}
+                                className="h-12 border-slate-200 bg-white hover:bg-slate-50 font-bold rounded-2xl px-6 gap-2 text-slate-600"
+                            >
                                 <FileText size={18} /> Kaynaklar
                             </Button>
                             <Button 
@@ -252,9 +275,13 @@ function CourseWatchContent() {
                         </div>
                     </div>
 
-                    <article className="prose prose-slate max-w-none text-slate-900 leading-relaxed text-lg min-h-[200px]">
+                    <article id="lesson-notes" className="max-w-none text-slate-900 leading-relaxed text-lg min-h-[200px]">
+                        <div className="flex items-center gap-3 mb-8">
+                             <div className="w-1 h-8 bg-primary rounded-full"></div>
+                             <h3 className="text-xl font-black text-slate-900">Ders Notları</h3>
+                        </div>
                         {currentLesson?.content_markdown ? (
-                            <div className="markdown-container">
+                            <div className="markdown-content bg-white p-8 md:p-12 rounded-[2rem] border border-slate-100 shadow-sm">
                                 <ReactMarkdown>{currentLesson.content_markdown}</ReactMarkdown>
                             </div>
                         ) : (

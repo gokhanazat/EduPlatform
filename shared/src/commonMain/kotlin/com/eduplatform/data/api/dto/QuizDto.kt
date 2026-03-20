@@ -32,7 +32,7 @@ data class OptionDto(
 @Serializable
 data class QuizAttemptDto(
     val id: String? = null,
-    val user_id: String,
+    val profile_id: String,
     val quiz_id: String,
     val score: Int,
     val passed: Boolean,

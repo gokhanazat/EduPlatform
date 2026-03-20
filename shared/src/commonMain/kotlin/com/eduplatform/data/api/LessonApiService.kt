@@ -22,7 +22,7 @@ class LessonApiService(private val client: HttpClient) {
         return handleApiCall {
             client.post(ApiConfig.BASE_URL + ApiConfig.LESSON_PROGRESS) {
                 header("Prefer", "resolution=merge-duplicates")
-                setBody(mapOf("user_id" to userId, "lesson_id" to lessonId))
+                setBody(mapOf("profile_id" to userId, "lesson_id" to lessonId))
             }
         }
     }
@@ -30,7 +30,7 @@ class LessonApiService(private val client: HttpClient) {
     suspend fun getProgress(userId: String, courseId: String): Result<EnrollmentDto?> {
         return handleApiCall<List<EnrollmentDto>> {
             client.get(ApiConfig.BASE_URL + ApiConfig.ENROLLMENTS) {
-                parameter("user_id", "eq.$userId")
+                parameter("profile_id", "eq.$userId")
                 parameter("course_id", "eq.$courseId")
             }
         }.let { result ->

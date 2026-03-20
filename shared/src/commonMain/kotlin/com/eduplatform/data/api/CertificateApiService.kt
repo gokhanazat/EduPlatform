@@ -11,7 +11,7 @@ class CertificateApiService(private val client: HttpClient) {
     suspend fun getMyCerts(userId: String): Result<List<CertificateDto>> {
         return handleApiCall {
             client.get(ApiConfig.BASE_URL + ApiConfig.CERTIFICATES) {
-                parameter("user_id", "eq.$userId")
+                parameter("profile_id", "eq.$userId")
                 parameter("order", "issued_at.desc")
             }
         }

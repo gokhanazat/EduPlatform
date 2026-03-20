@@ -39,7 +39,7 @@ class QuizApiService(private val client: HttpClient) {
     suspend fun getMyAttempts(userId: String, quizId: String): Result<List<QuizAttemptDto>> {
         return handleApiCall {
             client.get(ApiConfig.BASE_URL + ApiConfig.QUIZ_ATTEMPTS) {
-                parameter("user_id", "eq.$userId")
+                parameter("profile_id", "eq.$userId")
                 parameter("quiz_id", "eq.$quizId")
                 parameter("order", "taken_at.desc")
             }

@@ -18,7 +18,7 @@ fun CourseDto.toDomain(): Course = Course(
 )
 
 fun EnrollmentDto.toDomain(): Enrollment = Enrollment(
-    userId = user_id,
+    userId = profile_id,
     courseId = course_id,
     enrolledAt = enrolled_at ?: "",
     progressPercent = progress_percent
@@ -37,7 +37,7 @@ fun UserDto.toDomain(role: String, city: String): User = User(
 // --- CERTIFICATE MAPPER ---
 fun CertificateDto.toDomain(): Certificate = Certificate(
     id = id,
-    userId = user_id,
+    userId = profile_id,
     courseId = course_id,
     courseTitle = course_title,
     userName = user_name,
@@ -73,7 +73,7 @@ fun OptionDto.toDomain(): QuestionOption = QuestionOption(
 
 fun QuizAttemptDto.toDomain(): QuizAttempt = QuizAttempt(
     id = id ?: "",
-    userId = user_id,
+    userId = profile_id,
     quizId = quiz_id,
     score = score,
     passed = passed,

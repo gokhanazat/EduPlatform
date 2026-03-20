@@ -128,6 +128,54 @@ CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
+-- 3. DERSLER VE İÇERİK POLİTİKALARI
+ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view lessons" ON public.lessons;
+CREATE POLICY "Anyone can view lessons" ON public.lessons FOR SELECT USING (true);
+
+-- Admin tüm dersleri yönetebilir
+DROP POLICY IF EXISTS "Admins can manage lessons" ON public.lessons;
+CREATE POLICY "Admins can manage lessons" ON public.lessons FOR ALL TO authenticated
+USING (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin'));
+
+-- 4. SINAV VE SORU POLİTİKALARI
+ALTER TABLE public.quizzes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.options ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can view quizzes" ON public.quizzes;
+CREATE POLICY "Anyone can view quizzes" ON public.quizzes FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Anyone can view questions" ON public.questions;
+CREATE POLICY "Anyone can view questions" ON public.questions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Anyone can view options" ON public.options;
+CREATE POLICY "Anyone can view options" ON public.options FOR SELECT USING (true);
+
+-- 5. KAYIT VE İLERLEME POLİTİKALARI
+ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.lesson_completions ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can manage own enrollments" ON public.enrollments;
+CREATE POLICY "Users can manage own enrollments" ON public.enrollments FOR ALL TO authenticated
+USING (auth.uid() = profile_id);
+
+DROP POLICY IF EXISTS "Users can manage own completions" ON public.lesson_completions;
+CREATE POLICY "Users can manage own completions" ON public.lesson_completions FOR ALL TO authenticated
+USING (auth.uid() = profile_id);
+
+-- 6. SINAV SONUÇLARI VE SERTİFİKALAR
+ALTER TABLE public.quiz_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view own results" ON public.quiz_results;
+CREATE POLICY "Users can view own results" ON public.quiz_results FOR SELECT TO authenticated
+USING (auth.uid() = profile_id);
+
+DROP POLICY IF EXISTS "Users can view own certificates" ON public.certificates;
+CREATE POLICY "Users can view own certificates" ON public.certificates FOR SELECT TO authenticated
+USING (auth.uid() = profile_id);
+
 -- Whitelist sorgulama (Public - Kayıt anı için)
 DROP POLICY IF EXISTS "Whitelist sorgulama (Public)" ON public.whitelist;
 CREATE POLICY "Whitelist sorgulama (Public)" ON public.whitelist FOR SELECT TO anon USING (is_active = true);

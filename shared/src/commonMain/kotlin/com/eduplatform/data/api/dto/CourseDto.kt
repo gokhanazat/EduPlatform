@@ -18,7 +18,7 @@ data class CourseDto(
 
 @Serializable
 data class EnrollmentDto(
-    val user_id: String,
+    val profile_id: String,
     val course_id: String,
     val enrolled_at: String? = null,
     val progress_percent: Int = 0,

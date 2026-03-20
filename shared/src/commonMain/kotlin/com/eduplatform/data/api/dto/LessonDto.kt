@@ -15,6 +15,6 @@ data class LessonDto(
 
 @Serializable
 data class LessonProgressDto(
-    val user_id: String,
+    val profile_id: String,
     val lesson_id: String
 )
