@@ -52,7 +52,7 @@ fun QuizDto.toDomain(): Quiz = Quiz(
     courseId = course_id,
     passScorePercent = pass_score_percent,
     timeLimitMinutes = time_limit_minutes,
-    questions = questions.map { it.toDomain() }
+    questions = questions.filter { it.options.isNotEmpty() }.map { it.toDomain() }
 )
 
 fun QuestionDto.toDomain(): Question = Question(

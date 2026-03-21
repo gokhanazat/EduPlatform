@@ -25,7 +25,7 @@ class QuizRepositoryImpl(
     override suspend fun submitAttempt(attempt: QuizAttempt): Result<QuizAttempt> {
         // Map domain to DTO for submission
         val dto = com.eduplatform.data.api.dto.QuizAttemptDto(
-            user_id = attempt.userId,
+            profile_id = attempt.userId,
             quiz_id = attempt.quizId,
             score = attempt.score,
             passed = attempt.passed,

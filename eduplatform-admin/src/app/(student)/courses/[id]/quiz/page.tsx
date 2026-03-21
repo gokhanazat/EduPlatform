@@ -43,18 +43,38 @@ export default function StudentQuizPage() {
   useEffect(() => {
     async function loadQuiz() {
       // Load Course info
-      const { data: courseData } = await supabase.from("courses").select("*").eq("id", courseId).single()
+      const { data: courseData, error: courseError } = await supabase.from("courses").select("*").eq("id", courseId).single()
+      if (courseError) {
+        console.error("Course load error:", courseError)
+      }
       setCourse(courseData)
 
-      const { data } = await supabase
+      // Fetch quiz with nested questions and options
+      const { data, error } = await supabase
         .from("quizzes")
-        .select("*, questions(*, options(*))")
+        .select(`
+          *,
+          questions (
+            *,
+            options (*)
+          )
+        `)
         .eq("course_id", courseId)
-        .single()
+        .maybeSingle()
+
+      if (error) {
+        console.error("Quiz fetch error:", error)
+      }
 
       if (data) {
         setQuiz(data)
-        setQuestions(data.questions.sort((a: any, b: any) => a.order_index - b.order_index) || [])
+        // Ensure questions have options before setting them
+        const validQuestions = (data.questions || [])
+          .filter((q: any) => q.options && q.options.length > 0)
+          .sort((a: any, b: any) => a.order_index - b.order_index)
+        
+        setQuestions(validQuestions)
+        
         if (data.time_limit_minutes) {
           setTimeLeft(data.time_limit_minutes * 60)
         }
@@ -91,13 +111,13 @@ export default function StudentQuizPage() {
         correctCount++
       }
     })
-    const finalScore = (correctCount / questions.length) * 100
+    const finalScore = questions.length > 0 ? (correctCount / questions.length) * 100 : 0
     setScore(finalScore)
     setIsFinished(true)
 
     // Save result and check for certificate
     const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
+    if (session?.user && quiz) {
       const isPassed = finalScore >= (quiz.pass_score_percent || 70)
       
       await supabase.from("quiz_results").insert({
@@ -114,7 +134,7 @@ export default function StudentQuizPage() {
           .select("id")
           .eq("profile_id", session.user.id)
           .eq("course_id", courseId)
-          .single()
+          .maybeSingle()
         
         if (!existing) {
           await supabase.from("certificates").insert({
@@ -144,7 +164,11 @@ export default function StudentQuizPage() {
               <AlertCircle size={48} />
            </div>
            <h2 className="text-2xl font-black text-slate-900">Sınav Henüz Hazır Değil</h2>
-           <p className="text-slate-500">Bu eğitim için henüz soru eklenmemiş.</p>
+           <p className="text-slate-500">
+             {!quiz 
+               ? "Bu eğitim için henüz bir sınav oluşturulmamış." 
+               : "Bu eğitim için sorular henüz tamamlanmamış veya seçenekler girilmemiş."}
+           </p>
            <Button onClick={() => router.back()} className="w-full h-12 rounded-2xl bg-primary">Geri Dön</Button>
          </Card>
       </div>
