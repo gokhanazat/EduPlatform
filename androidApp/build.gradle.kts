@@ -24,6 +24,16 @@ android {
         versionName = "1.0"
     }
     
+    sourceSets {
+        getByName("main") {
+            res.srcDirs(
+                "src/main/res"
+                // Çakışmaya neden olan "../composeApp/src/androidMain/res" kaldırıldı.
+                // Kaynaklar zaten androidApp içinde mevcut.
+            )
+        }
+    }
+    
     buildToolsVersion = "35.0.0"
 
     packaging {

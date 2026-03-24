@@ -4,21 +4,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { 
   BookOpen, 
-  Search, 
-  Bell, 
-  User, 
-  ChevronRight, 
-  Code, 
-  Palette, 
-  Briefcase, 
-  Megaphone, 
-  Music, 
-  Camera,
+  ChevronRight,
+  User,
   Star,
   Clock,
   LayoutDashboard
 } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { createServerSupabase } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { Suspense } from "react"
@@ -52,7 +43,6 @@ export default async function LandingPage({
     isAdmin = profile?.role === 'admin'
   }
   
-  // Real course fetching with bypass for visibility
   let supabaseQuery = supabaseAdmin
     .from("courses")
     .select("*")
@@ -81,7 +71,7 @@ export default async function LandingPage({
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
               <BookOpen size={24} />
             </div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight italic">ITSO Akademi</span>
+            <span className="text-xl font-bold text-slate-900 tracking-tight italic">Edu Platform</span>
           </Link>
 
           {/* Navigation Links */}
@@ -119,16 +109,16 @@ export default async function LandingPage({
       </header>
 
       <main className="flex-1 px-8 py-8 space-y-16">
-        {/* Android Style Hero Banner */}
+        {/* Hero Banner - Yeni ogrenci-banner.jpeg kullanılacak */}
         <section className="relative w-full h-[400px] rounded-[3rem] overflow-hidden group shadow-2xl shadow-indigo-100">
           <img 
-            src="/ogrenci-banner.jpeg" 
+            src="/ogrenci-banner.jpeg"
             alt="Landing Hero" 
             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
           />
         </section>
 
-        {/* Categories & Search - Same as Home */}
+        {/* Categories & Search */}
         <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
             <Suspense fallback={<div className="h-12 w-full lg:w-96 bg-slate-50 animate-pulse rounded-2xl" />}>
                 <CategoryFilter categories={categories} currentCategory={currentCategory} />
@@ -208,10 +198,10 @@ export default async function LandingPage({
 
       <footer className="px-12 py-12 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 bg-slate-50/30">
         <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">I</div>
-            <span className="font-bold text-slate-900">ITSO Akademi</span>
+            <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">E</div>
+            <span className="font-bold text-slate-900">Edu Platform</span>
         </div>
-        <p className="text-xs text-slate-400 font-medium tracking-wide">© 2026 ITSO Akademi Eğitim Sistemleri. Tüm Hakları Saklıdır.</p>
+        <p className="text-xs text-slate-400 font-medium tracking-wide">© 2026 Edu Platform Eğitim Sistemleri. Tüm Hakları Saklıdır.</p>
         <div className="flex items-center gap-6">
             <Link href="#" className="text-xs font-bold text-slate-400 hover:text-primary">Kullanım Şartları</Link>
             <Link href="#" className="text-xs font-bold text-slate-400 hover:text-primary">Gizlilik Politikası</Link>
